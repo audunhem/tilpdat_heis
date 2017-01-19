@@ -1,0 +1,22 @@
+
+Modules:
+
+
+
+
+type ElevatorState struct {
+
+  
+
+
+
+type ElevatorData struct {
+  isAlive bool
+  queue list
+  state ElevatorState
+}
+
+1. Network
+  func init()
+  func broadcast(ElevatorData data)
+  
