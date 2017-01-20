@@ -1,7 +1,18 @@
 Possible fault modes:
 
 
-//
+//Things to think about
+1= How will we manage the reboot? All elevators will broadcast their orders and their state say every second! But in the case
+of a reboot -lets say #2 freezes and needs to reboot. Once online again he needs to update both his externalOrders and his
+INternal orders. THe information is stored  with #1 and #3 should he then broadcast a "requesting masterOrderlist" message?
+ANd then the other two will issue a masterOrderlist on the next broadcast?
+
+I dont know. Maybe its easier if all elevators broadcast the masterOrderList every second. So the entire set of
+information is being stored three places and being broadcasted by every elevator every second. When #3 receives a broadcast
+from #2 he will overwrite the part of his masterList concerning #2. Each time -even though probably 99/100 broadcasts will
+not contain an update
+
+
 
 1. One elevator loses connection with the other two
   - Lets assume that #2 loses connection.
@@ -41,6 +52,8 @@ Possible fault modes:
 
 4. Cosmic rays
 
+5. What if two units have a different version of the masterOrderList
+
 
 
 
@@ -48,16 +61,23 @@ Modules:
 
 
 
+type ExternalOrder struct {
+  floor int
+  direction int
+}
+
 
 type ElevatorState struct {
+  
   isDebugging bool
   
   
-
+  
 
 
 type ElevatorData struct {
   isAlive bool
+  isUpdated bool
   InternalQueue list
   ExternalQueue list
   state ElevatorState
@@ -68,7 +88,18 @@ type ElevatorData struct {
   func broadcast(ElevatorData data)
   
 
-2. Elevator
+2. Elevator //THis module also contains the driver
+  func assignExternalOrder(Order order)
+  func assignInternalOrder(int floor)
+  
+  
+  updateAllOrders
+  masterOrderList array 
+  //This is an array with all the orders in the system
+  //
+
+
+
 
 3. Assigner
 
