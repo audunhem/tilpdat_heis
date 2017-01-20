@@ -12,6 +12,8 @@ information is being stored three places and being broadcasted by every elevator
 from #2 he will overwrite the part of his masterList concerning #2. Each time -even though probably 99/100 broadcasts will
 not contain an update
 
+So each elevator has a unique number like #1 #2 and #3
+
 
 
 1. One elevator loses connection with the other two
@@ -70,14 +72,15 @@ type ExternalOrder struct {
 type ElevatorState struct {
   
   isDebugging bool
+  nextFloor int
+  direction int
   
-  
+}
   
 
 
 type ElevatorData struct {
   isAlive bool
-  isUpdated bool
   InternalQueue list
   ExternalQueue list
   state ElevatorState
@@ -85,7 +88,7 @@ type ElevatorData struct {
 
 1. Network
   func init()
-  func broadcast(ElevatorData data)
+  func broadcast(masterList array)
   
 
 2. Elevator //THis module also contains the driver
@@ -94,9 +97,11 @@ type ElevatorData struct {
   
   
   updateAllOrders
-  masterOrderList array 
-  //This is an array with all the orders in the system
-  //
+  masterList array
+  //This is an array containing the ElevatorData structs from all the units in the system
+  //Everytime a unit receives a broadcast packet from another elevator he will update that elevators
+  //ElevatorData struct in his versio of masterList
+  //This will make sure that no orders are lost even though there is some 
 
 
 
