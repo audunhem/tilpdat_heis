@@ -1,0 +1,21 @@
+Eksempel på use case-beskrivelse:
+
+Styr kran
+Precondition: Kranfører i setet,kranen tilkoplet strøm, kranen i ro
+Trigger: dødmannsknapp aktivert
+
+Suksess-scenario:
+1. Kranfører beveger joystick
+2. Kranens motorer kjøres med
+hastighet gitt av joystickutslag
+3. Dødmannsknapp slippes
+4. Kranen stopper.
+Utvidelser:
+1a: Dødmannsknapp slippes
+1a.1 Hopp til punkt 4
+2a: Dødmannsknapp slippes
+2a.1 Hopp til punkt 4
+Suksessgaranti:
+Som Precondition
+Minimal garanti:
+Kran i ro
