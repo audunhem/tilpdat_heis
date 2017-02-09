@@ -1,0 +1,72 @@
+package main
+
+import (
+  "fmt"
+  //"sort"
+)
+
+
+const N_ELEVATORS = 3
+const N_FLOORS = 4
+const (
+	DirnDown = -1 + iota
+	DirnStop
+	DirnUp
+)
+
+type Elevator struct{
+  InternalOrders []int
+  ExternalOrders []int //trenger noe for å vise retningen til ordren
+  Direction int
+  CurrentFloor int
+}
+
+var Elevators = make([]Elevator, N_ELEVATORS)
+
+func CalculateSingleElevatorCost(elevator Elevator, floor int, buttonDirection int) int{
+  if elevator.Direction == buttonDirection {
+      switch elevator.Direction {
+      case DirnUp:
+        if floor > elevator.CurrentFloor{
+          return floor - elevator.CurrentFloor
+        } else {
+          return (elevator.CurrentFloor-1)*2 + (elevator.CurrentFloor-floor)
+        }
+      case DirnDown:
+      if floor < elevator.CurrentFloor{
+        return elevator.CurrentFloor - floor
+      } else {
+        return (elevator.CurrentFloor-1)*2 + (floor - elevator.CurrentFloor)
+      }
+    }
+    } else {
+      switch elevator.Direction {
+      case DirnUp:
+        return 2*N_FLOORS - elevator.CurrentFloor - floor
+      case DirnDown:
+        return (elevator.CurrentFloor-1) + (floor-1)
+      }
+    }
+    return -1
+}
+
+func DistributeOrder(elevators[N_ELEVATORS] Elevator, floor int, buttonDirection int){
+  var minCost = 1000
+  var elevatorNumber = -1
+  for i := 0; i < N_ELEVATORS; i++ {
+    var thisCost = CalculateSingleElevatorCost(elevators[i], floor, buttonDirection)
+    if  thisCost < minCost{
+      minCost = thisCost
+      elevatorNumber = i
+    }
+  }
+  Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,floor)
+  //må også sortere
+}
+
+func main(){
+  var elev1 Elevator
+  elev1.Direction = DirnUp
+  elev1.CurrentFloor = 3
+  fmt.Println(CalculateSingleElevatorCost(elev1, 2, DirnDown))
+}
