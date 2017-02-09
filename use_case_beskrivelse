@@ -8,7 +8,7 @@ Trigger:
 
 Aktører:
 - Heisbruker
-- Heis
+- Heistekniker
 
 Forhåndskrav:
 - Heisen fungerer
@@ -23,7 +23,9 @@ Mislykkede konklusjoner:
 
 Utføringssteg:
 - Bruker trykker på ekstern knapp
-- Heis registrerer trykk, stopper når den er på vei i riktig retning
+- Heis registrerer trykk, 
+	- Kommer med en gang hvis tilgjengelig
+		- Hvis ikke stopper den når den er på vei i riktig retning
 - Dør åpnes i riktig etasje, holdes åpen i 3. sekunder
 - Bruker går inn, trykker på intern knapp
 - Heis kjører til riktig etasje
