@@ -1,6 +1,9 @@
 package driver
 
+const N_ELEV = 3
+
 const N_FLOORS = 4
+
 
 // Number of buttons (and corresponding lamps) on a per-floor basis
 const N_BUTTONS = 3
