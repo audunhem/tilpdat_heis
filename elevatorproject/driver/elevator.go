@@ -158,3 +158,7 @@ func GetStopSignal() int {
 func GetObstructionSignal() int {
     return IoReadBit(OBSTRUCTION)
 }
+
+func GetDoorOpen() bool{ //Sjekk om denne funker!!
+    return IoReadBit(LIGHT_STOP)
+}
