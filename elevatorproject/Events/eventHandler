@@ -2,10 +2,10 @@ package main
 
 import (
   "fmt"
-  //"sort"
+  "sort"
 )
 
-
+const THIS_ELEVATOR = 1
 const N_ELEVATORS = 3
 const N_FLOORS = 4
 const (
@@ -19,7 +19,10 @@ type Elevator struct{
   ExternalOrders []int //trenger noe for å vise retningen til ordren
   Direction int
   CurrentFloor int
+  ID int
 }
+
+var ExternalButtonLights = make([]int, 0)
 
 var Elevators = make([]Elevator, N_ELEVATORS)
 
@@ -50,8 +53,8 @@ func CalculateSingleElevatorCost(elevator Elevator, floor int, buttonDirection i
     return -1
 }
 
-func DistributeOrder(elevators[N_ELEVATORS] Elevator, floor int, buttonDirection int){
-  var minCost = 1000
+func FindBestElevator(elevators[N_ELEVATORS] Elevator, floor int, buttonDirection int){
+  var minCost = 1<<15 - 1
   var elevatorNumber = -1
   for i := 0; i < N_ELEVATORS; i++ {
     var thisCost = CalculateSingleElevatorCost(elevators[i], floor, buttonDirection)
@@ -60,13 +63,39 @@ func DistributeOrder(elevators[N_ELEVATORS] Elevator, floor int, buttonDirection
       elevatorNumber = i
     }
   }
-  Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,floor)
-  //må også sortere
+  go PlaceExternalOrder(elevatorNumber, floor, buttonDirection)
 }
+
+func PlaceExternalOrder(elevatorNumber, floor, buttonDirection int){
+  if elevatorNumber == THIS_ELEVATOR {
+    Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,floor)
+    sort.Ints(Elevators[elevatorNumber].ExternalOrders)
+  } else {
+    //net.SendNewOrder()
+  }
+}
+
+func SuccessfulPlacementConfirmation(elevatorNumber, floor, buttonDirection int) bool{
+  for i := 0; i < len(Elevators[elevatorNumber].ExternalOrders); i++{
+      if Elevators[elevatorNumber].ExternalOrders[i] == floor{
+        return true
+      }
+  }
+  return false
+}
+
+//må lage noe som merker at en heis har falt ut
+
+func RedestributeExternalOrders(){
+
+}
+
+
 
 func main(){
   var elev1 Elevator
   elev1.Direction = DirnUp
-  elev1.CurrentFloor = 3
-  fmt.Println(CalculateSingleElevatorCost(elev1, 2, DirnDown))
+  elev1.CurrentFloor = 1
+  fmt.Println(CalculateSingleElevatorCost(elev1, 2, DirnUp))
 }
+
