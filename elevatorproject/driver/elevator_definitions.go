@@ -20,3 +20,18 @@ const (
 	ButtonCallDown
 	ButtonCommand
 )
+
+type ElevatorStatus int
+const (
+	StatusIdle = iota
+	StatusDoorOpen
+	StatusMoving
+)
+
+type ElevatorData struct {
+	Floor 		int
+	Direction	Dirn
+	Orders	 	[N_FLOORS][N_BUTTONS]int
+	Status	 	ElevatorStatus
+	Initiated 	int
+}
