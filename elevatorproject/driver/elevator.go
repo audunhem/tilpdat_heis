@@ -90,17 +90,6 @@ func SetFloorIndicator(floor int) {
         IoClearBit(LIGHT_FLOOR_IND2)
     }
     
-    /*if floor&0x03 == 1 {
-        IoSetBit(LIGHT_FLOOR_IND3)
-    } else {
-        IoClearBit(LIGHT_FLOOR_IND3)
-    }
-    if floor&0x04 == 1 {
-        IoSetBit(LIGHT_FLOOR_IND4)
-    } else {
-        IoClearBit(LIGHT_FLOOR_IND4)
-    }
-    */
 }
 
 func SetDoorOpenLamp(value int) {
@@ -119,7 +108,7 @@ func SetStopLamp(value int) {
     }
 }
 
-func GetButtonSignal(button ButtonType, floor int) int {
+func GetOrderButtonSignal(button ButtonType, floor int) int {
     if floor < 0 {
         panic("Negative floor value")
     }
@@ -137,6 +126,7 @@ func GetButtonSignal(button ButtonType, floor int) int {
 }
 
 func GetFloorSensorSignal() int {
+    //must be changed if more floors
     if IoReadBit(SENSOR_FLOOR1) == 1 {
         return 0
     } else if IoReadBit(SENSOR_FLOOR2) == 1 {
