@@ -13,6 +13,9 @@ import (
 
 func init() {
 
+
+  //THIS FUNCTION IS NOT GOING TO BE USED
+
   //Should return the ID of the elevator and
   //number of elevators connected
 
@@ -104,8 +107,45 @@ func init() {
 func runNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan newOrder orderTx, chan newOrder orderRx)
   // First we need to asssign an ID to the elevator. We assume
   // That there can only be N_ELEV elevators at any time
-  
 
+  //We will use functionality provided by the Network-Go module
+
+  var id string
+  var elevAlive int
+  var i int
+
+  elevAlive  = 0
+
+
+  //Assign a unique ID to the elevator
+  id = fmt.Sprintf("%s-%d", localIP, os.Getpid())
+
+  //This is to send the ALIVE-signals
+
+  peerUpdateCh := make(chan peers.PeerUpdate)
+  peerTxEnable := make(chan bool)
+
+  go peers.Transmotter(15647, id, peerTxEnable)
+  go peers.Receiver()
+
+
+//We initialize contact. Lets wait 5secs (or until all elevators
+// are up and running).
+  for i<5 {
+    select {
+    case p := <- peerUpdateCh:
+      elevAlive = len(p.Peers)
+      i++
+      if elevAlive == N_ELEV {
+        break
+      }
+
+    default:
+      i++
+      time.Sleep(1*time.Second)
+  }
+
+}
 
 
   go bcast.Transmitter(16569, messageTx)
