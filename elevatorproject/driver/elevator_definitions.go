@@ -30,7 +30,7 @@ const (
 
 type ElevatorData struct {
 	Floor 		int
-	Direction	Dirn
+	Direction	MotorDirection
 	Orders	 	[N_FLOORS][N_BUTTONS]int
 	Status	 	ElevatorStatus
 	Initiated 	int
