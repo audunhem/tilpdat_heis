@@ -8,6 +8,9 @@ import (
 const THIS_ELEVATOR = 1
 const N_ELEVATORS = 3
 const N_FLOORS = 4
+
+var NETWORK_DOWN = false //hvordan er det bra å bruke denne variablen
+
 const (
 	DirnDown = -1 + iota
 	DirnStop
@@ -22,7 +25,7 @@ type Elevator struct{
   ID int
 }
 
-var ExternalButtonLights = make([]int, 0)
+var ExternalButtonLights = make([]int, 0) //skal den være her eller i intern-delen?
 
 var Elevators = make([]Elevator, N_ELEVATORS)
 
@@ -67,7 +70,7 @@ func FindBestElevator(elevators[N_ELEVATORS] Elevator, floor int, buttonDirectio
 }
 
 func PlaceExternalOrder(elevatorNumber, floor, buttonDirection int){
-  if elevatorNumber == THIS_ELEVATOR {
+  if elevatorNumber == THIS_ELEVATOR && !NETWORK_DOWN  {
     Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,floor)
     sort.Ints(Elevators[elevatorNumber].ExternalOrders)
   } else {
@@ -84,10 +87,22 @@ func SuccessfulPlacementConfirmation(elevatorNumber, floor, buttonDirection int)
   return false
 }
 
-//må lage noe som merker at en heis har falt ut
+//må lage noe som merker at en heis har falt ut. -- lages i nettverk
 
-func RedestributeExternalOrders(){
+func RedestributeExternalOrders(lostElevator Elevator){
 
+}
+
+func DenyNewExternalOrders(){
+  NETWORK_DOWN = true
+}
+
+func AllowNewExternalOrders(){
+  NETWORK_DOWN = false
+}
+
+func UpdateElevatorData(elevator Elevator){
+  
 }
 
 
