@@ -1,7 +1,7 @@
-package Events
+package event
 
 import (
-
+  "./../../elevatorController"
 )
 
 const (
@@ -24,9 +24,36 @@ func RecieveNewState(a,b,c,d chan int){
 
 func SendElevatorToNextFloor(newInternalOrder button){ //må vente til det kommer en intern ordre før man sender neste etasje
   switch{
-    case newInternalOrder.floor > thisElevator.currentFloor:
-      
+    case newInternalOrder.floor > thisElevator.currentFloor: //directrion is up
+      nextFloor = N_FLOORS
+      for i := 0; i < thisElevator.InternalOrders; i++ {
+        if (thisElevator.InternalOrders[i] > currentFloor) && (thisElevator.InternalOrders[i] < nextFloor) {
+          nextFloor = thisElevator.InternalOrders[i]
+        }
+      }
+      for j := 0; j < thisElevator.ExternalOrders; j++ {
+        if (thisElevator.ExternalOrders[i] > currentFloor) && (thisElevator.ExternalOrders[i] < nextFloor) {
+          if (thisElevator.ExternalOrders[i].direction == 1) || (thisElevator.ExternalOrders[i].floor == N_FLOORS){
+            nextFloor = thisElevator.ExternalOrders[i]
+          }
+        }
+      }
+    case newInternalOrder.floor < thisElevator.currentFloor: //directrion is down
+      nextFloor = 1
+      for i := 0; i < thisElevator.InternalOrders; i++ {
+        if (thisElevator.InternalOrders[i] > currentFloor) && (thisElevator.InternalOrders[i] > nextFloor) {
+          nextFloor = thisElevator.InternalOrders[i]
+        }
+      }
+      for j := 0; j < thisElevator.ExternalOrders; j++ {
+        if (thisElevator.ExternalOrders[i] < currentFloor) && (thisElevator.ExternalOrders[i] > nextFloor) {
+          if (thisElevator.ExternalOrders[i].direction == -1) || (thisElevator.ExternalOrders[i].floor == 1){
+            nextFloor = thisElevator.ExternalOrders[i]
+          }
+        }
+      }
   }
+  GoToFloor(nextFloor)
 }
 
 func MotorOutOfOrder(){
