@@ -1,26 +1,17 @@
-package main
+package Events
 
 import (
-  "fmt"
-  "sort"
+
 )
 
-const THIS_ELEVATOR = 1
-const N_ELEVATORS = 3
-const N_FLOORS = 4
 const (
 	DirnDown = -1 + iota
 	DirnStop
 	DirnUp
 )
 
-type Elevator struct{
-  InternalOrders []int
-  ExternalOrders []int //trenger noe for å vise retningen til ordren
-  Direction int
-  CurrentFloor int
-  ID int
-}
+var thisElevator = Elevators[0]
+//trenger noe ala thisElevator
 
 func RecieveNewState(a,b,c,d chan int){
   select{
@@ -31,8 +22,11 @@ func RecieveNewState(a,b,c,d chan int){
   }
 }
 
-func SendElevatorToNextFloor(){
-  //sender heisen til neste etasje i listen
+func SendElevatorToNextFloor(newInternalOrder button){ //må vente til det kommer en intern ordre før man sender neste etasje
+  switch{
+    case newInternalOrder.floor > thisElevator.currentFloor:
+      
+  }
 }
 
 func MotorOutOfOrder(){
