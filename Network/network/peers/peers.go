@@ -1,4 +1,4 @@
-16package peers
+package peers
 
 import (
 	"../conn"
