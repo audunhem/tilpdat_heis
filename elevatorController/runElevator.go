@@ -64,4 +64,28 @@ func GetNewOrders(updatedDataFSM chan ElevatorData, previousData ElevatorData, n
 }}
 
 
+func GoToFloor(floor int) bool{
+
+	if (floor - GetFloorSensorSignal()) > 0 {
+		SetMotorDirection(DirnUp) 
+	} else if (floor - GetFloorSensorSignal()) < 0 {
+		SetMotorDirection(DirnDown)
+	}
+	for (GetFloorSensorSignal() != floor) {
+	}
+	SetMotorDirection(DirnStop)
+	OpenDoors()
+
+	return true
+}
+
+
+func OpenDoors() {
+	if GetMotorDirection() != DirnStop {
+		fmt.Println("Heisen har ikke stoppet")
+	}
+	SetDoorOpenLamp(1)
+	time.Sleep(3*time.Second)
+	SetDoorOpenLamp(0)
+}
 
