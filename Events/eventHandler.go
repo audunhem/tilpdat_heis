@@ -1,4 +1,4 @@
-package Events
+package event
 
 import (
   //"sort"
