@@ -1,7 +1,8 @@
-package event
+package Events
 
 import (
   //"sort"
+  "../Network/network/peers"
 )
 
 const THIS_ELEVATOR = 1
@@ -117,6 +118,16 @@ func UpdateElevatorData(elevator Elevator){
   }
 }
 
+//------------------------------------------------------------------------------
+//Lagt til av Erling
+
+
+//In case of updated list of connected elevators
+func EventUpdatedPeers(updatedConnectionData peers.PeerUpdate) {
+
+  //Either we have fewer connections or more connections. Either way
+  //we want to update our
+
+}
+
 //gitgitgit
-
-
