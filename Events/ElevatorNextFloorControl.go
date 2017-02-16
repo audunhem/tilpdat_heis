@@ -30,3 +30,11 @@ func RecieveNewState(a,b,c,d chan int){
     //sett noe annet til noe annet
   }
 }
+
+func SendElevatorToNextFloor(){
+  //sender heisen til neste etasje i listen
+}
+
+func MotorOutOfOrder(){
+  //trenger en funksjon til å motta feilkode hvis heisen er fysisk forhindret
+}
