@@ -1,5 +1,6 @@
 package elevatorController
 
+/*
 import (
 	."./../driver"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 func GoToFloor(floor int){
 	//Takes the elevator to _floor_, opens the door for 3 secs and closes it. Returns 1 on success
 
-	
+
 
 	if (GetFloorSensorSignal() == -1) {
 		SetMotorDirection(DirnUp)
@@ -21,9 +22,9 @@ func GoToFloor(floor int){
 
 
 
-	
+
 	if (floor - GetFloorSensorSignal()) > 0 {
-		SetMotorDirection(DirnUp) 
+		SetMotorDirection(DirnUp)
 	} else if (floor - GetFloorSensorSignal()) < 0 {
 		SetMotorDirection(DirnDown)
 	}
@@ -40,12 +41,11 @@ func GoToFloor(floor int){
 
 
 
+*/
 
+//else if (floor == GetFloorSensorSignal())
 
-
-	//else if (floor == GetFloorSensorSignal()) 
-
-
+/*
 }
 
 
@@ -56,5 +56,4 @@ func OpenDoors() {
 	SetDoorOpenLamp(1)
 	time.Sleep(3*time.Second)
 	SetDoorOpenLamp(0)
-}
-
+}*/

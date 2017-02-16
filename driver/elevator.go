@@ -89,7 +89,7 @@ func SetFloorIndicator(floor int) {
     } else {
         IoClearBit(LIGHT_FLOOR_IND2)
     }
-    
+
 }
 
 func SetDoorOpenLamp(value int) {
@@ -141,7 +141,7 @@ func GetFloorSensorSignal() int {
 }
 
 func GetMotorDirection() MotorDirection {
-    
+
     if IoReadAnalog(MOTOR) == 0 {
         return DirnStop
     } else if IoReadBit(MOTORDIR) == 1 {
@@ -159,6 +159,6 @@ func GetObstructionSignal() int {
     return IoReadBit(OBSTRUCTION)
 }
 
-func GetDoorOpen() bool{ //Sjekk om denne funker!!
+func GetOpenDoor() int { //Sjekk om denne funker!!
     return IoReadBit(LIGHT_STOP)
 }
