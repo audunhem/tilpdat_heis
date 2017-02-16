@@ -8,25 +8,73 @@ import (
 )
 
 func main() {
+
+	InitializeElevator()
+
+	arriveAtFloorCh := make(chan int)
+	externalButtonCh := make(chan int)
+	internalButtonCh := make(chan int)
+
+	fmt.Println(GetFloorSensorSignal())
+
+	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
+
+	time.Sleep(5 * time.Second)
+
+	fmt.Println("Da var vi ferdige da dere")
+
+}
+
+/*
+
+func main2() {
 	updatedDataFSM := make(chan ElevatorData)
 	currentFloorChannel := make(chan int)
 	newOrderButtonTypeChannel := make(chan ButtonType)
 	newOrderFloorChannel := make(chan int)
 
-	go ReadAllSensors(updatedDataFSM, currentFloorChannel, newOrderButtonTypeChannel, newOrderFloorChannel)
+	var updatedData ElevatorData
+
+	var updatedDataPtr *ElevatorData
+
+	updatedDataPtr = &updatedData
+	previousData := InitializeElevator()
+	go ReadAllSensors(previousData, updatedDataFSM, currentFloorChannel, newOrderButtonTypeChannel, newOrderFloorChannel)
+	go updateDataFromSensor(updatedDataFSM, updatedDataPtr)
 	go print(currentFloorChannel)
-	fmt.Println("ok")
-	GoToFloor(1)
-	GoToFloor(2)
-	GoToFloor(3)
+	fmt.Println("testmain")
+
+	GoToFloor(1, updatedDataPtr)
+
+	GoToFloor(3, updatedDataPtr)
 }
 
 func print(currentFloorChannel chan int) {
+
 	for {
-		msg := <-currentFloorChannel
-		Println(msg)
-		time.Sleep(1 * time.Second)
+		select {
+		case msg1 := <-currentFloorChannel:
+			fmt.Println(msg1)
+
+		default:
+			time.Sleep(1 * time.Second)
+		}
+
 	}
+}
+
+func updateDataFromSensor(updatedDataFSM chan ElevatorData, updatedData *ElevatorData) {
+
+	for {
+		select {
+
+		case update := <-updatedDataFSM:
+
+			(*updatedData) = update
+		}
+
+	}
+
 }
 
 /*InitElevator()

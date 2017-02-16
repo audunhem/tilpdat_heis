@@ -4,7 +4,6 @@ const N_ELEV = 3
 
 const N_FLOORS = 4
 
-
 // Number of buttons (and corresponding lamps) on a per-floor basis
 const N_BUTTONS = 3
 
@@ -25,6 +24,7 @@ const (
 )
 
 type ElevatorStatus int
+
 const (
 	StatusIdle = iota
 	StatusDoorOpen
@@ -32,9 +32,9 @@ const (
 )
 
 type ElevatorData struct {
-	Floor 		int
-	Direction	MotorDirection
-	Orders	 	[N_FLOORS][N_BUTTONS]int
-	Status	 	ElevatorStatus
-	Initiated 	int
+	Floor     int
+	Direction MotorDirection
+	Orders    [N_FLOORS][N_BUTTONS]int
+	Status    ElevatorStatus
+	Initiated int
 }

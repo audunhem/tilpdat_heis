@@ -3,7 +3,6 @@ package elevatorController
 import (
 	. "./../driver"
 	"fmt"
-	"time"
 )
 
 func InitializeElevator() ElevatorData {
@@ -27,16 +26,57 @@ func InitializeElevator() ElevatorData {
 	return initializedData
 }
 
-func ReadAllSensors(updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,*/, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {
+//Erling prøver å lage en ny versjon av denne
+func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan int, internalButtonCh chan int) {
+
+	currentFloor := GetFloorSensorSignal()
+
+	for {
+		//Vi ønsker kun beskjed hvis vi når en NY etasje!
+		if GetFloorSensorSignal() != currentFloor {
+			currentFloor = GetFloorSensorSignal()
+			//Her polles floor sensoren to ganger, er det unødvendig?
+			//send info på channel
+		}
+
+		//Looper gjennom alle EKSTERNE knapper
+		for i := 0; i < N_FLOORS; i++ {
+			for j := 0; j < 1; j++ {
+
+				if GetOrderButtonSignal(ButtonChannels[i][j]) == 1 {
+					//Send info på externalButtonCh
+				}
+
+			}
+		}
+
+		//Looper gjennom alle INTERNE knapper
+
+		for i := 0; i < N_FLOORS; i++ {
+			if GetOrderButtonSignal(ButtonChannels[i][ButtonCommand]) == 1 {
+				//Send info på internalButtonCh
+			}
+		}
+
+	}
+
+	//Dette er egentlig alt denne funksjonen bør gjøre. Vi må finne på en god løsning på utfordringen av polling av knapper. Hvordan fungerer det egentlig?
+	//Vil vi sende 1000 beskjeder om trykket inn knapp dersom en knapp holdes inn i 100ms?? MEst sannsynlig ikke
+
+}
+
+func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,*/, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {
 	//check all sensors.
 	//update data
 	//set all lights
-	var previousData ElevatorData
-	var updatedData ElevatorData
+	fmt.Println("Begin reading sensors")
+	//var previousData ElevatorData
 	var currentFloor int
 
+	var updatedData ElevatorData
+
 	var i int
-	previousData = InitializeElevator()
+	//previousData = InitializeElevator()
 	for {
 		if previousData.Initiated != 1 {
 			panic("ElevatorNotInitialized")
@@ -44,7 +84,6 @@ func ReadAllSensors(updatedDataFSM chan ElevatorData, currentFloorChannel chan i
 		currentFloor = GetFloorSensorSignal()
 
 		updatedData.Floor = currentFloor
-		fmt.Println(updatedData.Floor)
 		updatedData.Direction = GetMotorDirection()
 
 		if GetMotorDirection() != 0 {
@@ -57,15 +96,18 @@ func ReadAllSensors(updatedDataFSM chan ElevatorData, currentFloorChannel chan i
 		}
 
 		SetFloorIndicator(updatedData.Floor)
+
 		i = i + 1
 		if i == 10 {
+
 			previousData = updatedData
 			i = 0
 		}
+		fmt.Println("okok")
 		updatedDataFSM <- updatedData
 		currentFloorChannel <- currentFloor
-
-		GetNewOrders(updatedData, updatedData, newOrderButtonTypeChannel, newOrderFloorChannel)
+		fmt.Println("etter")
+		//GetNewOrders(updatedData, updatedData, newOrderButtonTypeChannel, newOrderFloorChannel)
 	}
 }
 
@@ -87,28 +129,4 @@ func GetNewOrders(updatedData ElevatorData, previousData ElevatorData, newOrderB
 		newOrderFloorChannel <- newOrderFloor
 	}
 	return false
-}
-
-func GoToFloor(floor int) bool {
-
-	if (floor - GetFloorSensorSignal()) > 0 {
-		SetMotorDirection(DirnUp)
-	} else if (floor - GetFloorSensorSignal()) < 0 {
-		SetMotorDirection(DirnDown)
-	}
-	for GetFloorSensorSignal() != floor {
-	}
-	SetMotorDirection(DirnStop)
-	OpenDoors()
-
-	return true
-}
-
-func OpenDoors() {
-	if GetMotorDirection() != DirnStop {
-		fmt.Println("Heisen har ikke stoppet")
-	}
-	SetDoorOpenLamp(1)
-	time.Sleep(3 * time.Second)
-	SetDoorOpenLamp(0)
 }

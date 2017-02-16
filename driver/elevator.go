@@ -1,7 +1,7 @@
 package driver
 
 import (
-//"fmt"
+    "fmt"
 )
 
 const MOTOR_SPEED = 2800
@@ -37,12 +37,14 @@ func InitElevator() {
 }
 
 func SetMotorDirection(dir MotorDirection) {
+    fmt.Println(dir)
     if dir == 0 {
         IoWriteAnalog(MOTOR, 0)
     } else if dir > 0 {
         IoClearBit(MOTORDIR)
         IoWriteAnalog(MOTOR, MOTOR_SPEED)
     } else if dir < 0 {
+        fmt.Println("hallo")
         IoSetBit(MOTORDIR)
         IoWriteAnalog(MOTOR, MOTOR_SPEED)
     }
