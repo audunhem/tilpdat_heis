@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"../driver/"
 )
 
 // We define some custom struct to send over the network.
@@ -19,6 +20,28 @@ type HelloMsg struct {
 }
 
 func main() {
+	updateTx = make(chan ElevatorData)
+	updateRx = make(chan ElevatorData)
+
+	newOrderTx = make(chan ElevatorData)
+	newOrderRx = make(chan ElevatorData)
+
+	peerUpdateCh = make(chan peers.PeerUpdate)
+
+	runNetwork(updateTx, updateRx, newOrderTx, newOrderRx, peerUpdateCh)
+
+	for {}
+
+
+}
+
+
+
+
+
+
+
+	/*
 	// Our id can be anything. Here we pass it on the command line, using
 	//  `go run main.go -id=our_id`
 	var id string
@@ -79,3 +102,4 @@ func main() {
 		}
 	}
 }
+*/

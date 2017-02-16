@@ -9,6 +9,7 @@ import (
   "os"
   "time"
   "strconv"
+  "../driver/"
 )
 
 func init() {
@@ -49,7 +50,9 @@ func init() {
 
   }
 
-  //Now lets assignetworkInit := make(chan peers.PeerUpdate)
+  //Now lets assig
+
+  peerUpdateCh := make(chan peers.PeerUpdate)
 
   go peers.Receiver(15647, networkInit)
   go peers.Transmitter(15647, id, enable)
@@ -104,7 +107,7 @@ func init() {
 
 
 
-func runNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan newOrder orderTx, chan newOrder orderRx)
+func RunNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan newOrder orderTx, chan newOrder orderRx, chan peers.PeerUpdate peerUpdateCh)
   // First we need to asssign an ID to the elevator. We assume
   // That there can only be N_ELEV elevators at any time
 
@@ -122,20 +125,23 @@ func runNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan new
 
   //This is to send the ALIVE-signals
 
-  peerUpdateCh := make(chan peers.PeerUpdate)
   peerTxEnable := make(chan bool)
 
   go peers.Transmotter(15647, id, peerTxEnable)
-  go peers.Receiver()
+  go peers.Receiver(15647, peerUpdateCh)
 
 
 //We initialize contact. Lets wait 5secs (or until all elevators
 // are up and running).
+
   for i<5 {
     select {
     case p := <- peerUpdateCh:
       elevAlive = len(p.Peers)
-      i++
+      fmt.Printf("Elevator update:\n")
+      fmt.Printf("  Elevators:    %q\n", p.Peers)
+      fmt.Printf("  New:      %q\n", p.New)
+      fmt.Printf("  Lost:     %q\n", p.Lost)
       if elevAlive == N_ELEV {
         break
       }
@@ -143,10 +149,15 @@ func runNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan new
     default:
       i++
       time.Sleep(1*time.Second)
+    }
   }
 
-}
 
+  //If this is the only elevator alive,
+  if {elevAlive == 1} {
+
+    panic()
+  }
 
   go bcast.Transmitter(16569, messageTx)
   go bcast.Receiver(16569, messageRx)
