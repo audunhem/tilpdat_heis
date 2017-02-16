@@ -1,13 +1,6 @@
 package main
 
 import (
-	"./network/bcast"
-	"./network/localip"
-	"./network/peers"
-	"flag"
-	"fmt"
-	"os"
-	"time"
 	"../driver/"
 )
 
@@ -20,6 +13,8 @@ type HelloMsg struct {
 }
 
 func main() {
+
+
 	updateTx = make(chan ElevatorData)
 	updateRx = make(chan ElevatorData)
 
