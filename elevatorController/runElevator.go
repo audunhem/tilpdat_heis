@@ -42,11 +42,9 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan int, intern
 		//Looper gjennom alle EKSTERNE knapper
 		for i := 0; i < N_FLOORS; i++ {
 			for j := 0; j < 1; j++ {
-
 				if GetOrderButtonSignal(ButtonChannels[i][j]) == 1 {
 					//Send info på externalButtonCh
 				}
-
 			}
 		}
 
