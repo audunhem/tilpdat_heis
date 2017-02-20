@@ -6,7 +6,23 @@ import (
 "time" */
 )
 
-func fsmArriveAtFloor() {}
+func fsmArriveAtFloor(elevatorData ) {
+
+
+  if OrderCheckIfShouldStop(elevatorStruct)
+    fsmStopAtFloor()
+    elevatorStruct = OrderCompleted(floor,direction. elevatorStruct)
+    elevatorStruct = OrderSetNextDirection(elevatorStruct)
+}
+
+
+func fsmExternalButtonPressed() {
+
+
+
+
+}
+
 
 func goDown() {}
 

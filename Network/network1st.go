@@ -63,7 +63,7 @@ func RunNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan new
   //If this is the only elevator alive,
   if {elevAlive == 1} {
 
-    panic()
+    panic("Cant connect to other elevators!")
   }
 
   go bcast.Transmitter(16569, messageTx)

@@ -15,13 +15,41 @@ func main() {
 	externalButtonCh := make(chan int)
 	internalButtonCh := make(chan int)
 
+	updateElevatorRxCh = make(chan elevatorData)
+	updateElevatorTxCh = make(chan elevatorData)
+
+	newOrderRxCh = make(chan order)
+	newOrderTxCh = make(chan order)
+
+	peerUpdateCh = make(chan peers)
+
 	fmt.Println(GetFloorSensorSignal())
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
-	time.Sleep(5 * time.Second)
+	for {
+		select {
 
-	fmt.Println("Da var vi ferdige da dere")
+		case msg <- arriveAtFloorCh
+
+		case msg <- externalButtonCh
+
+		case msg <- internalButtonCh
+
+
+		case msg <- updateElevatorRxCh
+
+		case msg <- updateElevatorTxCh
+
+
+		case msg <- newOrderTxCh
+
+		case msg <- newOrderRxCh
+
+
+	}
+	}
+
 
 }
 
