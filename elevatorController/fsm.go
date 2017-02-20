@@ -6,22 +6,47 @@ import (
 "time" */
 )
 
-func fsmArriveAtFloor(elevatorData ) {
-
+func fsmArriveAtFloor(elevatorData) elevatorData {
 
   if OrderCheckIfShouldStop(elevatorStruct)
     fsmStopAtFloor()
-    elevatorStruct = OrderCompleted(floor,direction. elevatorStruct)
-    elevatorStruct = OrderSetNextDirection(elevatorStruct)
+    elevatorData = OrderCompleted(floor,direction. elevatorData)
+    elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
+    //hvis det ikke er flere ordre
 }
 
 
-func fsmExternalButtonPressed() {
+func fsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed elevatorOrder) ElevatorData {
 
+  if (true) {
+  elevatorData = elevatorStruct
+  elevatorData = OrderAddOrder(newButtonPressed, elevatorStruct)
 
-
+  if !elevatorData.ElevatorStatus {
+    elevatorData = OrderSetNextDirection(elevatorData)
+  }
 
 }
+  return elevatorData
+
+}
+
+
+func fsmInternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder) ElevatorData {
+
+  elevatorData := OrderAddOrder(newButtonPressed, elevatorStruct)
+
+  if !elevatorData.ElevatorStatus {
+
+      elevatorData = OrderSetNextDirection(elevatorData)
+  }
+
+  return elevatorData
+
+}
+
+
+func
 
 
 func goDown() {}

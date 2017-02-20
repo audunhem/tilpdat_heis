@@ -35,8 +35,8 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan int, intern
 		//Vi ønsker kun beskjed hvis vi når en NY etasje!
 		if GetFloorSensorSignal() != currentFloor {
 			currentFloor = GetFloorSensorSignal()
-			//Her polles floor sensoren to ganger, er det unødvendig?
-			//send info på channel
+
+			arriveAtFloorCh <- msg
 		}
 
 		//Looper gjennom alle EKSTERNE knapper

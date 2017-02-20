@@ -31,6 +31,12 @@ const (
 	StatusMoving
 )
 
+type ElevatorOrder struct {
+	Floor int
+	Direction int
+	ElevatorID string
+}
+
 type ElevatorData struct {
 	Floor     int
 	Direction MotorDirection

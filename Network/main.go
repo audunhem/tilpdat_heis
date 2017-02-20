@@ -1,21 +1,17 @@
 package main
 
 import (
-	"../driver/elevator_definitions"
+	."../driver/"
 )
-type HelloMsg struct {
-	Message string
-	Iter    int
-}
 
 func main() {
 
 
-	updateTx = make(chan driverElevatorData)
+	updateTx = make(chan ElevatorData)
 	updateRx = make(chan ElevatorData)
 
-	newOrderTx = make(chan ElevatorData)
-	newOrderRx = make(chan ElevatorData)
+	newOrderTx = make(chan ElevatorOrder)
+	newOrderRx = make(chan ElevatorOrder)
 
 	peerUpdateCh = make(chan peers.PeerUpdate)
 

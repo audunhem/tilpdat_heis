@@ -9,21 +9,19 @@ import (
 
 func main() {
 
-	InitializeElevator()
+	elevatorData := InitializeElevator()
 
-	arriveAtFloorCh := make(chan int)
-	externalButtonCh := make(chan int)
-	internalButtonCh := make(chan int)
+	arriveAtFloorCh := make(chan ElevatorOrder)
+	externalButtonCh := make(chan ElevatorOrder)
+	internalButtonCh := make(chan ElevatorOrder)
 
-	updateElevatorRxCh = make(chan elevatorData)
+	updateElevatorRxCh = make(chan elevatorData, 1024)
 	updateElevatorTxCh = make(chan elevatorData)
 
-	newOrderRxCh = make(chan order)
-	newOrderTxCh = make(chan order)
+	newOrderRxCh = make(chan ElevatorOrder)
+	newOrderTxCh = make(chan ElevatorOrder)
 
 	peerUpdateCh = make(chan peers)
-
-	fmt.Println(GetFloorSensorSignal())
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
@@ -31,20 +29,21 @@ func main() {
 		select {
 
 		case msg <- arriveAtFloorCh
+			fsmArriveAtFloor(msg)
 
 		case msg <- externalButtonCh
+			elevatorData = fsmExternalButtonPressed(elevatorData, msg)
 
 		case msg <- internalButtonCh
-
+			elevatorData = fsmInternalButtonPressed(elevatorData, msg)
 
 		case msg <- updateElevatorRxCh
-
-		case msg <- updateElevatorTxCh
-
-
-		case msg <- newOrderTxCh
+			elevatorData = OrderReceivedUpdate(elevatorData, msg)
 
 		case msg <- newOrderRxCh
+			elevatorData = OrderReceivedOrder(elevatorData, msg)
+
+		case msg <- peerUpdateCh
 
 
 	}
