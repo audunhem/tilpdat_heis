@@ -61,7 +61,8 @@ func OrderCompleted(elevatorData ElevatorData) ElevatorData {
     if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else if elevatorData.Floor == N_FLOORS-1 {
+    }
+    if elevatorData.Floor == N_FLOORS-1 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
     } else {
@@ -75,7 +76,8 @@ func OrderCompleted(elevatorData ElevatorData) ElevatorData {
     if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else if elevatorData.Floor == 0 {
+    }
+    if elevatorData.Floor == 0 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
     } else {
