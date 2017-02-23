@@ -2,7 +2,6 @@ package elevatorController
 
 import (
 	. "./../driver"
-	"fmt"
 )
 
 func InitializeElevator() ElevatorData {
@@ -74,7 +73,8 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrd
 
 }
 
-func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,*/, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {
+/*
+func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {
 	//check all sensors.
 	//update data
 	//set all lights
@@ -139,3 +139,5 @@ func GetNewOrders(updatedData ElevatorData, previousData ElevatorData, newOrderB
 	}
 	return false
 }
+
+*/

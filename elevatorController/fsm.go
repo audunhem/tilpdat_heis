@@ -12,9 +12,9 @@ import (
 
 func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 	elevatorData := elevatorStruct
-
+	elevatorData.Floor = floor
+	PrintOrderList(elevatorData)
 	if CheckIfShouldStop(elevatorData) == true {
-		fmt.Println("Stanser")
 		FsmStopAtFloor()
 		elevatorData = OrderCompleted(elevatorData)
 		PrintOrderList(elevatorData)
@@ -30,7 +30,7 @@ func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder) ElevatorData {
 
 	elevatorData := elevatorStruct
-	elevatorData = PlaceOrder(elevatorData, newButtonPressed)
+	elevatorData = PlaceExternalOrder2(elevatorData, newButtonPressed)
 
 	if elevatorData.Status == StatusIdle {
 		elevatorData = OrderSetNextDirection(elevatorData)
@@ -61,13 +61,11 @@ func PrintOrderList(elevatorStruct ElevatorData) {
 
 }
 
-/*
+func FsmInternalButtonPressed(elevatorStruct ElevatorData, floor int) ElevatorData {
 
-func fsmInternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder) ElevatorData {
+	elevatorData := PlaceInternalOrder(elevatorStruct, floor)
 
-	elevatorData := OrderAddOrder(newButtonPressed, elevatorStruct)
-
-	if !elevatorData.ElevatorStatus {
+	if elevatorData.Status == StatusIdle {
 
 		elevatorData = OrderSetNextDirection(elevatorData)
 	}
@@ -75,6 +73,8 @@ func fsmInternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed Elev
 	return elevatorData
 
 }
+
+/*
 
 func goDown() {}
 

@@ -55,8 +55,16 @@ func FindBestElevator(order ElevatorOrder) {
   PlaceExternalOrder(elevatorNumber, order)
 }
 
-func PlaceOrder(elevatorData ElevatorData, order ElevatorOrder) ElevatorData {
+//Dette må også ordnes 23feb
+func PlaceExternalOrder2(elevatorData ElevatorData, order ElevatorOrder) ElevatorData {
   elevatorData.Orders[order.Floor][order.Direction] = 1
+  return elevatorData
+}
+
+func PlaceInternalOrder(elevatorData ElevatorData, floor int) ElevatorData {
+
+  elevatorData.Orders[floor][ButtonType(2)] = 1
+
   return elevatorData
 }
 

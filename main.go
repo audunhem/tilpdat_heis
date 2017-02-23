@@ -31,7 +31,6 @@ func main() {
 			//fsmArriveAtFloor(msg)
 
 			elevatorData = FsmArriveAtFloor(elevatorData, msg1)
-			PrintOrderList(elevatorData)
 
 		case msg2 := <-externalButtonCh:
 			//elevatorData = fsmExternalButtonPressed(elevatorData, msg)
@@ -40,7 +39,7 @@ func main() {
 			PrintOrderList(elevatorData)
 
 		case msg3 := <-internalButtonCh:
-			fmt.Println(msg3)
+			elevatorData = FsmInternalButtonPressed(elevatorData, msg3)
 			//elevatorData = fsmInternalButtonPressed(elevatorData, msg)
 
 		case msg4 := <-updateElevatorRxCh:

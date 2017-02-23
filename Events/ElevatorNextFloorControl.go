@@ -30,8 +30,8 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
         if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
           return false
         }
-        return true
       }
+      return true
     }
     return false
   case elevatorData.Direction == DirnDown:
@@ -47,8 +47,8 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
         if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
           return false
         }
-        return true
       }
+      return true
     }
     return false
   }
