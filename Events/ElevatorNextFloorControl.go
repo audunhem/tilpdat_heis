@@ -1,28 +1,65 @@
-package event
+package Events
 
 import (
-  "./../../elevatorController"
+  ."./../elevatorController"
+  ."./../driver"
 )
 
-const (
-	DirnDown = -1 + iota
-	DirnStop
-	DirnUp
-)
 
 var thisElevator = Elevators[0]
 //trenger noe ala thisElevator
 
-func RecieveNewState(a,b,c,d chan int){
+/*func RecieveNewState(a,b,c,d chan int){
   select{
   case c <- x:
     //sett noe til noe
   case c2 <- y:
     //sett noe annet til noe annet
   }
+}*/
+
+func CheckIfShouldStop(elevatorData ElevatorData) bool {
+  switch{
+  case elevatorData.direction = DirnUp:
+    if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == true || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == true {
+      //elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = false
+      //elevatorData.Orders[elevatorData.Floor][ButtonInternal] = false
+      //mulig dette kan føre til at ordre forsvinner, og kanskje bedre med en egen funksjon for funksjonaliteten
+      return true
+    } else {
+      if elevatorData.Floor == N_FLOORS - 1 {
+        return true
+      }
+    } else if {
+      for int i := elevatorData.Floor + 1 ; i < N_FLOORS ; i++ {
+        if elevatorData.Orders[i][ButtonCallUp] == false || elevatorData.Orders[i][ButtonCallDown] == false || elevatorData.Orders[i][ButtonInternal] == false{
+          return true
+        }
+      }
+    }
+    return false
+  case elevatorData.direction = DirnDown:
+    if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == true || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == true {
+      //elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = false
+      //elevatorData.Orders[elevatorData.Floor][ButtonInternal] = false
+      //mulig dette kan føre til at ordre forsvinner, og kanskje bedre med en egen funksjon for funksjonaliteten
+      return true
+    } else if {
+      if elevatorData.Floor == 0 {
+        return true
+      }
+    } else if {
+      for int i := 0 ; i < ElevatorData.Floor ; i++ {
+        if elevatorData.Orders[i][ButtonCallUp] == false || elevatorData.Orders[i][ButtonCallDown] == false || elevatorData.Orders[i][ButtonInternal] == false{
+          return true
+        }
+      }
+    }
+    return false
+  }
 }
 
-func SendElevatorToNextFloor(newInternalOrder button){ //må vente til det kommer en intern ordre før man sender neste etasje
+/*func SendElevatorToNextFloor(newInternalOrder button){ //må vente til det kommer en intern ordre før man sender neste etasje
   switch{
     case newInternalOrder.floor > thisElevator.currentFloor: //directrion is up
       nextFloor = N_FLOORS
@@ -58,4 +95,4 @@ func SendElevatorToNextFloor(newInternalOrder button){ //må vente til det komme
 
 func MotorOutOfOrder(){
   //trenger en funksjon til å motta feilkode hvis heisen er fysisk forhindret
-}
+}*/

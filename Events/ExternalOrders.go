@@ -21,71 +21,71 @@ type Order struct{
 
 type Elevator struct{
   InternalOrders []int
-  ExternalOrders []Button //trenger noe for å vise retningen til ordren
+  ExternalOrders []Order //trenger noe for å vise retningen til ordren
   Direction int
   CurrentFloor int
   ID int
   Alive bool
 }
 
-var ExternalButtonLights = make([]int, 0) //skal den være her eller i intern-delen?
+var ExternalOrderLights = make([]int, 0) //skal den være her eller i intern-delen?
 
 var Elevators = make([]Elevator, N_ELEVATORS)
 
-func CalculateSingleElevatorCost(elevator Elevator, button Button) int{
-  if elevator.Direction == button.direction {
+func CalculateSingleElevatorCost(elevator Elevator, order Order) int{
+  if elevator.Direction == Order.direction {
       switch elevator.Direction {
       case DirnUp:
-        if button.floor > elevator.CurrentFloor{
-          return button.floor - elevator.CurrentFloor
+        if order.floor > elevator.CurrentFloor{
+          return order.floor - elevator.CurrentFloor
         } else {
-          return (elevator.CurrentFloor-1)*2 + (elevator.CurrentFloor-button.floor)
+          return (elevator.CurrentFloor-1)*2 + (elevator.CurrentFloor-order.floor)
         }
       case DirnDown:
-      if button.floor < elevator.CurrentFloor{
-        return elevator.CurrentFloor - button.floor
+      if order.floor < elevator.CurrentFloor{
+        return elevator.CurrentFloor - order.floor
       } else {
-        return (elevator.CurrentFloor-1)*2 + (button.floor - elevator.CurrentFloor)
+        return (elevator.CurrentFloor-1)*2 + (order.floor - elevator.CurrentFloor)
       }
     }
     } else {
       switch elevator.Direction {
       case DirnUp:
-        return 2*N_FLOORS - elevator.CurrentFloor - button.floor
+        return 2*N_FLOORS - elevator.CurrentFloor - order.floor
       case DirnDown:
-        return (elevator.CurrentFloor-1) + (button.floor-1)
+        return (elevator.CurrentFloor-1) + (order.floor-1)
       }
     }
     return -1
 }
 
-func FindBestElevator(button Button){
+func FindBestElevator(order Order){
   var minCost = 1<<15 - 1
   var elevatorNumber = -1
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].Alive {
-      var thisCost = CalculateSingleElevatorCost(Elevators[i], button)
+      var thisCost = CalculateSingleElevatorCost(Elevators[i], order)
       if  thisCost < minCost{
         minCost = thisCost
         elevatorNumber = i
       }
     }
   }
-  PlaceExternalOrder(elevatorNumber, button)
+  PlaceExternalOrder(elevatorNumber, order)
 }
 
-func PlaceExternalOrder(elevatorNumber int, button Button){
+func PlaceExternalOrder(elevatorNumber int, order Order){
   if elevatorNumber == THIS_ELEVATOR && !NETWORK_DOWN  {
-    Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,button)
+    Elevators[elevatorNumber].ExternalOrders = append(Elevators[elevatorNumber].ExternalOrders,order)
     //sort.Ints(Elevators[elevatorNumber].ExternalOrders.floor) må kunne sortere knappene
   } else {
     //net.SendNewOrder()
   }
 }
 
-func SuccessfulPlacementConfirmation(elevatorNumber int, button Button) bool{
+func SuccessfulPlacementConfirmation(elevatorNumber int, order Order) bool{
   for i := 0; i < len(Elevators[elevatorNumber].ExternalOrders); i++{
-      if Elevators[elevatorNumber].ExternalOrders[i].floor == button.floor{
+      if Elevators[elevatorNumber].ExternalOrders[i].floor == order.floor{
         return true
       }
   }
@@ -130,4 +130,6 @@ func EventUpdatedPeers(updatedConnectionData peers.PeerUpdate) {
 
 }
 
-//gitgitgit
+func main(){
+  return 0
+}
