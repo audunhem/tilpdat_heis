@@ -27,23 +27,28 @@ func InitializeElevator() ElevatorData {
 }
 
 //Erling prøver å lage en ny versjon av denne
-func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan int, internalButtonCh chan int) {
+func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrder, internalButtonCh chan int) {
 
 	currentFloor := GetFloorSensorSignal()
+	//Lager variabel for å unngå å oppfatte tastetrykk flere ganger
+	lastButtonPressed := -1
 
 	for {
 		//Vi ønsker kun beskjed hvis vi når en NY etasje!
-		if GetFloorSensorSignal() != currentFloor {
+		if GetFloorSensorSignal() != currentFloor && GetFloorSensorSignal() >= 0 {
 			currentFloor = GetFloorSensorSignal()
-
-			arriveAtFloorCh <- msg
+			arriveAtFloorCh <- currentFloor
 		}
 
 		//Looper gjennom alle EKSTERNE knapper
 		for i := 0; i < N_FLOORS; i++ {
-			for j := 0; j < 1; j++ {
-				if GetOrderButtonSignal(ButtonChannels[i][j]) == 1 {
-					//Send info på externalButtonCh
+			for j := 0; j < 2; j++ {
+				if GetOrderButtonSignal(ButtonType(j), i) == 1 {
+					if lastButtonPressed != 2*i+j {
+						lastButtonPressed = 2*i + j
+						externalButtonCh <- ElevatorOrder{i, j, "-1"}
+					}
+
 				}
 			}
 		}
@@ -51,8 +56,12 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan int, intern
 		//Looper gjennom alle INTERNE knapper
 
 		for i := 0; i < N_FLOORS; i++ {
-			if GetOrderButtonSignal(ButtonChannels[i][ButtonCommand]) == 1 {
-				//Send info på internalButtonCh
+			if GetOrderButtonSignal(ButtonType(2), i) == 1 {
+				if lastButtonPressed != N_FLOORS*2+i {
+					lastButtonPressed = N_FLOORS*2 + i
+					internalButtonCh <- i
+					//Send info på internalButtonCh
+				}
 			}
 		}
 

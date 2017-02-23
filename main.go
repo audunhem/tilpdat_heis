@@ -1,54 +1,58 @@
 package main
 
 import (
+	. "./Events"
 	. "./driver"
 	. "./elevatorController"
 	"fmt"
-	"time"
-)
+	/*"time" */)
 
 func main() {
 
 	elevatorData := InitializeElevator()
 
-	arriveAtFloorCh := make(chan ElevatorOrder)
+	arriveAtFloorCh := make(chan int)
 	externalButtonCh := make(chan ElevatorOrder)
-	internalButtonCh := make(chan ElevatorOrder)
+	internalButtonCh := make(chan int)
 
-	updateElevatorRxCh = make(chan elevatorData, 1024)
-	updateElevatorTxCh = make(chan elevatorData)
+	updateElevatorRxCh := make(chan ElevatorData)
+	//updateElevatorTxCh := make(chan ElevatorData)
 
-	newOrderRxCh = make(chan ElevatorOrder)
-	newOrderTxCh = make(chan ElevatorOrder)
+	newOrderRxCh := make(chan ElevatorOrder)
+	//newOrderTxCh := make(chan ElevatorOrder)
 
-	peerUpdateCh = make(chan peers)
+	//peerUpdateCh := make(chan peers)
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
 	for {
 		select {
 
-		case msg <- arriveAtFloorCh
-			fsmArriveAtFloor(msg)
+		case msg1 := <-arriveAtFloorCh:
+			//fsmArriveAtFloor(msg)
+			fmt.Println(msg1)
+			checkIfShouldStop(elevatorData)
 
-		case msg <- externalButtonCh
-			elevatorData = fsmExternalButtonPressed(elevatorData, msg)
+		case msg2 := <-externalButtonCh:
+			//elevatorData = fsmExternalButtonPressed(elevatorData, msg)
+			fmt.Println(msg2)
 
-		case msg <- internalButtonCh
-			elevatorData = fsmInternalButtonPressed(elevatorData, msg)
+		case msg3 := <-internalButtonCh:
+			fmt.Println(msg3)
+			//elevatorData = fsmInternalButtonPressed(elevatorData, msg)
 
-		case msg <- updateElevatorRxCh
-			elevatorData = OrderReceivedUpdate(elevatorData, msg)
+		case msg4 := <-updateElevatorRxCh:
+			fmt.Println(msg4)
+			//elevatorData = OrderReceivedUpdate(elevatorData, msg)
 
-		case msg <- newOrderRxCh
-			elevatorData = OrderReceivedOrder(elevatorData, msg)
+		case msg5 := <-newOrderRxCh:
+			fmt.Println(msg5)
+			//elevatorData = OrderReceivedOrder(elevatorData, msg)
+			//case msg := <-peerUpdateCh:
+			//elevatorData = PeerUpdate(elevatorData, msg)
 
-		case msg <- peerUpdateCh
-
-
+		}
 	}
-	}
-
 
 }
 

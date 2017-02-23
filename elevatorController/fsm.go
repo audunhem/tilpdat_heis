@@ -1,53 +1,127 @@
 package elevatorController
 
 import (
-/*. "./../driver"
-"fmt"
-"time" */
-)
+	. "./../driver"
+	/*"fmt"
+	  "time" */)
 
-func fsmArriveAtFloor(elevatorData) elevatorData {
+//Funksjoner som skal legges til ORDER MODULEN
+//------------------------------------------------------------------------------------------------------------
 
-  if OrderCheckIfShouldStop(elevatorStruct)
-    fsmStopAtFloor()
-    elevatorData = OrderCompleted(floor,direction. elevatorData)
-    elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
-    //hvis det ikke er flere ordre
+func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
+	elevatorData := elevatorStruct
+	check := 0
+
+	if elevatorData.Status == StatusIdle {
+		for i := 0; i < N_FLOORS; i++ {
+			for j := 0; j < N_BUTTONS; j++ {
+				if elevatorData.Orders[i][j] == 1 {
+					if elevatorData.Floor < i {
+						elevatorData.Direction = DirnUp
+						SetMotorDirection(DirnUp)
+						elevatorData.Status = StatusMoving
+					} else if elevatorData.Floor > i {
+						elevatorData.Direction = DirnDown
+						SetMotorDirection(DirnDown)
+						elevatorData.Status = StatusMoving
+					} else if elevatorData.Floor == i {
+						elevatorData = fsmArriveAtFloor(i, elevatorData)
+					}
+				}
+
+			}
+		}
+
+	} else if elevatorData.Direction == DirnUp {
+		for i := elevatorData.Floor; i < N_FLOORS; i++ {
+			for j := 0; j < N_BUTTONS; j++ {
+				if elevatorData.Orders[i][j] == 1 {
+					SetMotorDirection(DirnUp)
+					check = 1
+				}
+			}
+		}
+
+		if check == 0 {
+			for i := 0; i < elevatorData.Floor; i++ {
+				for j := 0; j < N_BUTTONS; j++ {
+					if elevatorData.Orders[i][j] == 1 {
+						SetMotorDirection(DirnDown)
+						elevatorData.Direction = DirnDown
+					}
+				}
+			}
+		} else if elevatorData.Direction == DirnDown {
+
+			for i := 0; i < elevatorData.Floor; i++ {
+				for j := 0; j < N_BUTTONS; j++ {
+					if elevatorData.Orders[i][j] == 1 {
+						SetMotorDirection(DirnDown)
+						check = 1
+					}
+				}
+			}
+
+			if check == 0 {
+				for i := elevatorData.Floor; i < N_FLOORS; i++ {
+					for j := 0; j < N_BUTTONS; j++ {
+						if elevatorData.Orders[i][j] == 1 {
+							SetMotorDirection(DirnUp)
+							elevatorData.Direction = DirnUp
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return elevatorData
 }
 
+func fsmArriveAtFloor(floor int, elevatorStruct ElevatorData) ElevatorData {
+	elevatorData := elevatorStruct
 
+	/*
+		if OrderCheckIfShouldStop(elevatorStruct) == 1 {
+			//fsmStopAtFloor()
+			//elevatorData = OrderCompleted(floor, elevatorData.o,elevatorData)
+			elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
+			//hvis det ikke er flere ordre
+		}
+	*/
+
+	return elevatorData
+
+}
+
+/*
 func fsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed elevatorOrder) ElevatorData {
 
-  if (true) {
-  elevatorData = elevatorStruct
-  elevatorData = OrderAddOrder(newButtonPressed, elevatorStruct)
+	if true {
+		elevatorData = elevatorStruct
+		elevatorData = OrderAddOrder(newButtonPressed, elevatorStruct)
 
-  if !elevatorData.ElevatorStatus {
-    elevatorData = OrderSetNextDirection(elevatorData)
-  }
+	}
+	if !elevatorData.ElevatorStatus {
+		elevatorData = OrderSetNextDirection(elevatorData)
+	}
+
+	return elevatorData
 
 }
-  return elevatorData
-
-}
-
 
 func fsmInternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder) ElevatorData {
 
-  elevatorData := OrderAddOrder(newButtonPressed, elevatorStruct)
+	elevatorData := OrderAddOrder(newButtonPressed, elevatorStruct)
 
-  if !elevatorData.ElevatorStatus {
+	if !elevatorData.ElevatorStatus {
 
-      elevatorData = OrderSetNextDirection(elevatorData)
-  }
+		elevatorData = OrderSetNextDirection(elevatorData)
+	}
 
-  return elevatorData
+	return elevatorData
 
 }
-
-
-func
-
 
 func goDown() {}
 
