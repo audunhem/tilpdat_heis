@@ -2,6 +2,7 @@ package Events
 
 import (
   . "./../driver"
+  "fmt"
 )
 
 var thisElevator = Elevators[0]
@@ -58,12 +59,11 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
 func OrderCompleted(elevatorData ElevatorData) ElevatorData {
   switch elevatorData.Direction {
   case DirnUp:
-    if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    }
     if elevatorData.Floor == N_FLOORS-1 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
+      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
+    } else if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
+      elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
     } else {
       for i := elevatorData.Floor + 1; i < N_FLOORS; i++ {
@@ -73,12 +73,11 @@ func OrderCompleted(elevatorData ElevatorData) ElevatorData {
       }
     }
   case DirnDown:
-    if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    }
     if elevatorData.Floor == 0 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
+      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
+    } else if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
+      elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
     } else {
       for i := 0; i < elevatorData.Floor; i++ {
@@ -133,7 +132,7 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
   elevatorData := elevatorStruct
   check := 0
 
-  if elevatorData.Status == StatusIdle {
+  if elevatorData.Status == StatusIdle || elevatorData.Direction == DirnStop {
     for i := 0; i < N_FLOORS; i++ {
       for j := 0; j < N_BUTTONS; j++ {
         if elevatorData.Orders[i][j] == 1 {
@@ -146,7 +145,7 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
             SetMotorDirection(DirnDown)
             elevatorData.Status = StatusMoving
           } else if elevatorData.Floor == i {
-            //FIKS DETTE
+            fmt.Println("NEINEI")
           }
         }
 
@@ -154,6 +153,7 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
     }
 
   } else if elevatorData.Direction == DirnUp {
+
     for i := elevatorData.Floor; i < N_FLOORS; i++ {
       for j := 0; j < N_BUTTONS; j++ {
         if elevatorData.Orders[i][j] == 1 {
@@ -178,34 +178,32 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
         elevatorData.Status = StatusIdle
         elevatorData.Direction = DirnStop
       }
-    } else if elevatorData.Direction == DirnDown {
+    }
+  } else if elevatorData.Direction == DirnDown {
+    for i := 0; i < elevatorData.Floor; i++ {
+      for j := 0; j < N_BUTTONS; j++ {
+        if elevatorData.Orders[i][j] == 1 {
+          SetMotorDirection(DirnDown)
+          check = 1
+        }
+      }
+    }
 
-      for i := 0; i < elevatorData.Floor; i++ {
+    if check == 0 {
+      for i := elevatorData.Floor; i < N_FLOORS; i++ {
         for j := 0; j < N_BUTTONS; j++ {
           if elevatorData.Orders[i][j] == 1 {
-            SetMotorDirection(DirnDown)
+            SetMotorDirection(DirnUp)
+            elevatorData.Direction = DirnUp
             check = 1
           }
         }
       }
-
-      if check == 0 {
-        for i := elevatorData.Floor; i < N_FLOORS; i++ {
-          for j := 0; j < N_BUTTONS; j++ {
-            if elevatorData.Orders[i][j] == 1 {
-              SetMotorDirection(DirnUp)
-              elevatorData.Direction = DirnUp
-              check = 1
-            }
-          }
-        }
-      }
-
-      if check == 0 {
-        check = 1
-      }
     }
 
+    if check == 0 {
+      check = 1
+    }
   } else {
     elevatorData.Status = StatusIdle
     elevatorData.Direction = DirnStop
