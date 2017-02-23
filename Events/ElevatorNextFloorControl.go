@@ -21,18 +21,16 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
   switch {
   case elevatorData.Direction == DirnUp:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      //elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = false
-      //elevatorData.Orders[elevatorData.Floor][ButtonInternal] = false
-      //mulig dette kan føre til at ordre forsvinner, og kanskje bedre med en egen funksjon for funksjonaliteten
       return true
     } else if elevatorData.Floor == N_FLOORS-1 {
       return true
 
     } else {
       for i := elevatorData.Floor + 1; i < N_FLOORS; i++ {
-        if elevatorData.Orders[i][ButtonCallUp] == 0 || elevatorData.Orders[i][ButtonCallDown] == 0 || elevatorData.Orders[i][ButtonInternal] == 0 {
-          return true
+        if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
+          return false
         }
+        return true
       }
     }
     return false
@@ -46,9 +44,10 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
       return true
     } else {
       for i := 0; i < elevatorData.Floor; i++ {
-        if elevatorData.Orders[i][ButtonCallUp] == 0 || elevatorData.Orders[i][ButtonCallDown] == 0 || elevatorData.Orders[i][ButtonInternal] == 0 {
-          return true
+        if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
+          return false
         }
+        return true
       }
     }
     return false
