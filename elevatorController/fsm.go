@@ -17,6 +17,7 @@ func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 		fmt.Println("Stanser")
 		FsmStopAtFloor()
 		elevatorData = OrderCompleted(elevatorData)
+		PrintOrderList(elevatorData)
 		//elevatorData = OrderCompleted(floor, elevatorData.o,elevatorData)
 		elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
 		//hvis det ikke er flere ordre
@@ -52,7 +53,12 @@ func PrintOrderList(elevatorStruct ElevatorData) {
 			fmt.Printf("%d", elevatorStruct.Orders[i][j])
 		}
 		fmt.Printf("\n")
+
 	}
+
+	fmt.Printf("--------------------------------------------")
+	fmt.Printf("\n")
+
 }
 
 /*

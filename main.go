@@ -31,10 +31,10 @@ func main() {
 			//fsmArriveAtFloor(msg)
 
 			elevatorData = FsmArriveAtFloor(elevatorData, msg1)
+			PrintOrderList(elevatorData)
 
 		case msg2 := <-externalButtonCh:
 			//elevatorData = fsmExternalButtonPressed(elevatorData, msg)
-			fmt.Println(msg2)
 			elevatorData = FsmExternalButtonPressed(elevatorData, msg2)
 
 			PrintOrderList(elevatorData)

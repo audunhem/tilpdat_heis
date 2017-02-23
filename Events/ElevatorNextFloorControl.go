@@ -203,6 +203,10 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
         check = 1
       }
     }
+
+  } else {
+    elevatorData.Status = StatusIdle
+    elevatorData.Direction = DirnStop
   }
 
   return elevatorData
