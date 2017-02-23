@@ -33,6 +33,7 @@ func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed Elev
 	elevatorData = PlaceExternalOrder2(elevatorData, newButtonPressed)
 
 	if elevatorData.Status == StatusIdle {
+		fmt.Println("IDLE")
 		elevatorData = OrderSetNextDirection(elevatorData)
 	}
 
@@ -43,7 +44,7 @@ func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed Elev
 func FsmStopAtFloor() {
 	SetMotorDirection(DirnStop)
 	SetDoorOpenLamp(1)
-	time.Sleep(3 * time.Second)
+	time.Sleep(500 * time.Millisecond)
 	SetDoorOpenLamp(0)
 }
 

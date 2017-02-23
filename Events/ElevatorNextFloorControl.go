@@ -173,12 +173,13 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
           }
         }
       }
-
-      if check == 0 {
-        elevatorData.Status = StatusIdle
-        elevatorData.Direction = DirnStop
-      }
     }
+
+    if check == 0 {
+      elevatorData.Status = StatusIdle
+      elevatorData.Direction = DirnStop
+    }
+
   } else if elevatorData.Direction == DirnDown {
     for i := 0; i < elevatorData.Floor; i++ {
       for j := 0; j < N_BUTTONS; j++ {
@@ -202,8 +203,10 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
     }
 
     if check == 0 {
-      check = 1
+      elevatorData.Status = StatusIdle
+      elevatorData.Direction = DirnStop
     }
+
   } else {
     elevatorData.Status = StatusIdle
     elevatorData.Direction = DirnStop

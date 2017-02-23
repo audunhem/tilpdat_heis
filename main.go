@@ -11,13 +11,13 @@ func main() {
 	elevatorData := InitializeElevator()
 
 	arriveAtFloorCh := make(chan int)
-	externalButtonCh := make(chan ElevatorOrder)
-	internalButtonCh := make(chan int)
+	externalButtonCh := make(chan ElevatorOrder, 10)
+	internalButtonCh := make(chan int, 10)
 
-	updateElevatorRxCh := make(chan ElevatorData)
+	updateElevatorRxCh := make(chan ElevatorData, 10)
 	//updateElevatorTxCh := make(chan ElevatorData)
 
-	newOrderRxCh := make(chan ElevatorOrder)
+	newOrderRxCh := make(chan ElevatorOrder, 10)
 	//newOrderTxCh := make(chan ElevatorOrder)
 
 	//peerUpdateCh := make(chan peers)
@@ -40,7 +40,7 @@ func main() {
 
 		case msg3 := <-internalButtonCh:
 			elevatorData = FsmInternalButtonPressed(elevatorData, msg3)
-			//elevatorData = fsmInternalButtonPressed(elevatorData, msg)
+			PrintOrderList(elevatorData)
 
 		case msg4 := <-updateElevatorRxCh:
 			fmt.Println(msg4)

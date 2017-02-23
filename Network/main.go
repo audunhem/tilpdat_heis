@@ -1,23 +1,22 @@
 package main
 
 import (
-	."../driver/"
+	. "../driver/"
 )
 
 func main() {
 
+	updateTx := make(chan ElevatorData)
+	updateRx := make(chan ElevatorData)
 
-	updateTx = make(chan ElevatorData)
-	updateRx = make(chan ElevatorData)
+	newOrderTx := make(chan ElevatorOrder)
+	newOrderRx := make(chan ElevatorOrder)
 
-	newOrderTx = make(chan ElevatorOrder)
-	newOrderRx = make(chan ElevatorOrder)
+	peerUpdateCh := make(chan peers.PeerUpdate)
 
-	peerUpdateCh = make(chan peers.PeerUpdate)
+	go runNetwork(updateTx, updateRx, newOrderTx, newOrderRx, peerUpdateCh)
 
-	runNetwork(updateTx, updateRx, newOrderTx, newOrderRx, peerUpdateCh)
-
-	for {}
-
+	for {
+	}
 
 }
