@@ -1,6 +1,6 @@
 package driver
 
-const N_ELEV = 3
+const N_ELEVATORS = 3
 
 const N_FLOORS = 4
 
@@ -20,7 +20,7 @@ type ButtonType int
 const (
 	ButtonCallUp = iota
 	ButtonCallDown
-	ButtonCommand
+	ButtonInternal
 )
 
 type ElevatorStatus int
@@ -32,8 +32,8 @@ const (
 )
 
 type ElevatorOrder struct {
-	Floor int
-	Direction int
+	Floor      int
+	Direction  int //-1 for ned, 1 for opp
 	ElevatorID string
 }
 
@@ -42,5 +42,6 @@ type ElevatorData struct {
 	Direction MotorDirection
 	Orders    [N_FLOORS][N_BUTTONS]int
 	Status    ElevatorStatus
-	Initiated int
+	ID        string
+	Initiated bool
 }

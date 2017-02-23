@@ -1,7 +1,6 @@
 package main
 
 import (
-	. "./Events"
 	. "./driver"
 	. "./elevatorController"
 	"fmt"
@@ -30,12 +29,15 @@ func main() {
 
 		case msg1 := <-arriveAtFloorCh:
 			//fsmArriveAtFloor(msg)
-			fmt.Println(msg1)
-			checkIfShouldStop(elevatorData)
+
+			elevatorData = FsmArriveAtFloor(elevatorData, msg1)
 
 		case msg2 := <-externalButtonCh:
 			//elevatorData = fsmExternalButtonPressed(elevatorData, msg)
 			fmt.Println(msg2)
+			elevatorData = FsmExternalButtonPressed(elevatorData, msg2)
+
+			PrintOrderList(elevatorData)
 
 		case msg3 := <-internalButtonCh:
 			fmt.Println(msg3)

@@ -22,11 +22,13 @@ func InitializeElevator() ElevatorData {
 	initializedData.Floor = GetFloorSensorSignal()
 	initializedData.Direction = GetMotorDirection()
 	initializedData.Status = 0
-	initializedData.Initiated = 1
+	initializedData.Initiated = true
 	return initializedData
 }
 
 //Erling prøver å lage en ny versjon av denne
+
+//TODÒ 23 feb: Skrive alt bedre, finne bedre måte for å
 func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrder, internalButtonCh chan int) {
 
 	currentFloor := GetFloorSensorSignal()
@@ -34,7 +36,7 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrd
 	lastButtonPressed := -1
 
 	for {
-		//Vi ønsker kun beskjed hvis vi når en NY etasje!
+		//Vi ønsker kun beskjed hvis vi når en NY etasje! SKRIV DENNE PÅ EN BEDRE MÅTE, VI GJØR TRE KALL TIL GETFLOORSENSORSIGNAL
 		if GetFloorSensorSignal() != currentFloor && GetFloorSensorSignal() >= 0 {
 			currentFloor = GetFloorSensorSignal()
 			arriveAtFloorCh <- currentFloor
@@ -85,7 +87,7 @@ func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData,
 	var i int
 	//previousData = InitializeElevator()
 	for {
-		if previousData.Initiated != 1 {
+		if previousData.Initiated != true {
 			panic("ElevatorNotInitialized")
 		}
 		currentFloor = GetFloorSensorSignal()
