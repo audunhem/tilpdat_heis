@@ -96,3 +96,77 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
 func MotorOutOfOrder(){
   //trenger en funksjon til å motta feilkode hvis heisen er fysisk forhindret
 }*/
+
+
+
+
+
+func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
+  elevatorData := elevatorStruct
+  check := 0
+
+  if elevatorData.Status == StatusIdle {
+    for i := 0; i < N_FLOORS; i++ {
+      for j := 0; j < N_BUTTONS; j++ {
+        if elevatorData.Orders[i][j] == 1 {
+          if elevatorData.Floor < i {
+            elevatorData.Direction = DirnUp
+            SetMotorDirection(DirnUp)
+            elevatorData.Status = StatusMoving
+          } else if elevatorData.Floor > i {
+            elevatorData.Direction = DirnDown
+            SetMotorDirection(DirnDown)
+            elevatorData.Status = StatusMoving
+          } else if elevatorData.Floor == i {
+            elevatorData = fsmArriveAtFloor(i, elevatorData)
+          }
+        }
+
+      }
+    }
+
+  } else if elevatorData.Direction == DirnUp {
+    for i := elevatorData.Floor; i < N_FLOORS; i++ {
+      for j := 0; j < N_BUTTONS; j++ {
+        if elevatorData.Orders[i][j] == 1 {
+          SetMotorDirection(DirnUp)
+          check = 1
+        }
+      }
+    }
+
+    if check == 0 {
+      for i := 0; i < elevatorData.Floor; i++ {
+        for j := 0; j < N_BUTTONS; j++ {
+          if elevatorData.Orders[i][j] == 1 {
+            SetMotorDirection(DirnDown)
+            elevatorData.Direction = DirnDown
+          }
+        }
+      }
+    } else if elevatorData.Direction == DirnDown {
+
+      for i := 0; i < elevatorData.Floor; i++ {
+        for j := 0; j < N_BUTTONS; j++ {
+          if elevatorData.Orders[i][j] == 1 {
+            SetMotorDirection(DirnDown)
+            check = 1
+          }
+        }
+      }
+
+      if check == 0 {
+        for i := elevatorData.Floor; i < N_FLOORS; i++ {
+          for j := 0; j < N_BUTTONS; j++ {
+            if elevatorData.Orders[i][j] == 1 {
+              SetMotorDirection(DirnUp)
+              elevatorData.Direction = DirnUp
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return elevatorData
+}
