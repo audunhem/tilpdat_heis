@@ -1,26 +1,31 @@
 package main
 
 import (
+	. "./Network"
+	. "./Network/network/peers"
 	. "./driver"
-	. "./elevatorController"
-	"fmt"
+	//. "./elevatorController"
+	//. ".Network/network/peers"
+	//"fmt"
 	/*"time" */)
 
 func main() {
-
 	elevatorData := InitializeElevator()
+
+	updateElevatorRxCh := make(chan ElevatorData)
+	updateElevatorTxCh := make(chan ElevatorData)
+
+	newOrderTxCh := make(chan ElevatorOrder)
+	newOrderRxCh := make(chan ElevatorOrder)
+
+	peerUpdateCh := make(chan PeerUpdate)
+	peerTxEnableCh := make(chan bool)
 
 	arriveAtFloorCh := make(chan int)
 	externalButtonCh := make(chan ElevatorOrder, 10)
 	internalButtonCh := make(chan int, 10)
 
-	updateElevatorRxCh := make(chan ElevatorData, 10)
-	//updateElevatorTxCh := make(chan ElevatorData)
-
-	newOrderRxCh := make(chan ElevatorOrder, 10)
-	//newOrderTxCh := make(chan ElevatorOrder)
-
-	//peerUpdateCh := make(chan peers)
+	go RunNetwork(updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
@@ -49,7 +54,8 @@ func main() {
 		case msg5 := <-newOrderRxCh:
 			fmt.Println(msg5)
 			//elevatorData = OrderReceivedOrder(elevatorData, msg)
-			//case msg := <-peerUpdateCh:
+		case msg6 := <-peerUpdateCh:
+			fmt.Println(msg6)
 			//elevatorData = PeerUpdate(elevatorData, msg)
 
 		}

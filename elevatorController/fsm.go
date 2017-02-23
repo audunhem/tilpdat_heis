@@ -11,6 +11,7 @@ import (
 //------------------------------------------------------------------------------------------------------------
 
 func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
+	SetFloorIndicator(floor)
 	elevatorData := elevatorStruct
 	elevatorData.Floor = floor
 	PrintOrderList(elevatorData)
@@ -18,12 +19,10 @@ func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 		FsmStopAtFloor()
 		elevatorData = OrderCompleted(elevatorData)
 		PrintOrderList(elevatorData)
-		//elevatorData = OrderCompleted(floor, elevatorData.o,elevatorData)
 		elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
 		//hvis det ikke er flere ordre
 	}
-	SetAllLights(elevatorStruct)
-
+	SetAllLights(elevatorData)
 
 	return elevatorData
 
@@ -39,8 +38,7 @@ func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed Elev
 		elevatorData = OrderSetNextDirection(elevatorData)
 	}
 
-	SetAllLights(elevatorStruct)
-
+	SetAllLights(elevatorData)
 
 	return elevatorData
 
@@ -76,16 +74,16 @@ func FsmInternalButtonPressed(elevatorStruct ElevatorData, floor int) ElevatorDa
 		elevatorData = OrderSetNextDirection(elevatorData)
 	}
 
-	SetAllLights(elevatorStruct)
+	SetAllLights(elevatorData)
 
 	return elevatorData
 
 }
 
-func SetAllLights(elevatorData ElevatorData){
-	for i := 0; i < N_FLOORS; i++	{
-		for j := 0; j < N_BUTTONS; i++ {
-			SetButtonLamp(j,i,elevatorData.Orders[i][j])
+func SetAllLights(elevatorData ElevatorData) {
+	for i := 0; i < N_FLOORS; i++ {
+		for j := 0; j < N_BUTTONS; j++ {
+			SetButtonLamp(ButtonType(j), i, elevatorData.Orders[i][j])
 		}
 	}
 }

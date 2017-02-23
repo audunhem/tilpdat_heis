@@ -1,81 +1,49 @@
-package network1st
+package Network
 
 import (
+  . "../driver/"
   "./network/bcast"
   "./network/localip"
   "./network/peers"
-  "flag"
+  //"flag"
   "fmt"
   "os"
-  "time"
-  "strconv"
-  "../driver/"
+  //"strconv"
+  //"time"
 )
 
-
-
-func RunNetwork(chan elevatorData updateTx, chan elevatorData updateRx, chan newOrder orderTx, chan newOrder orderRx, chan peers.PeerUpdate peerUpdateCh)
+func RunNetwork(updateTxCh chan ElevatorData, updateRxCh chan ElevatorData, orderTxCh chan ElevatorOrder, orderRxCh chan ElevatorOrder, peerUpdateCh chan peers.PeerUpdate, peerTxEnable chan bool) {
   // First we need to asssign an ID to the elevator. We assume
   // That there can only be N_ELEV elevators at any time
 
   //We will use functionality provided by the Network-Go module
 
-  var id string
-  var elevAlive int
-  var i int
+  ip, err := localip.LocalIP()
 
-  elevAlive  = 0
-
+  if err != nil {
+    panic(err)
+  }
 
   //Assign a unique ID to the elevator
-  id = fmt.Sprintf("%s-%d", localIP, os.Getpid())
+  id := fmt.Sprintf("%s-%d", ip, os.Getpid())
 
   //This is to send the ALIVE-signals
 
-  peerTxEnable := make(chan bool)
-
-  go peers.Transmotter(15647, id, peerTxEnable)
+  go peers.Transmitter(15647, id, peerTxEnable)
   go peers.Receiver(15647, peerUpdateCh)
 
+  //We initialize contact. Lets wait 5secs (or until all elevators
+  // are up and running
 
-//We initialize contact. Lets wait 5secs (or until all elevators
-// are up and running).
+  go bcast.Transmitter(16569, updateTxCh)
+  go bcast.Receiver(16569, updateRxCh)
 
-  for i<5 {
-    select {
-    case p := <- peerUpdateCh:
-      elevAlive = len(p.Peers)
-      fmt.Printf("Elevator update:\n")
-      fmt.Printf("  Elevators:    %q\n", p.Peers)
-      fmt.Printf("  New:      %q\n", p.New)
-      fmt.Printf("  Lost:     %q\n", p.Lost)
-      if elevAlive == N_ELEV {
-        break
-      }
+  go bcast.Transmitter(16568, orderTxCh)
+  go bcast.Receiver(16568, orderRxCh)
 
-    default:
-      i++
-      time.Sleep(1*time.Second)
-    }
+  for {
   }
-
-
-  //If this is the only elevator alive,
-  if {elevAlive == 1} {
-
-    panic("Cant connect to other elevators!")
-  }
-
-  go bcast.Transmitter(16569, messageTx)
-  go bcast.Receiver(16569, messageRx)
-
-  go bcast.Transmitter(16568, orderTx)
-  go bcast.Receiver(16568, orderRx)
-
-  for {}
 }
-
-
 
 /*
 
@@ -172,3 +140,5 @@ func init() {
 
   return elevID
 }
+
+*/
