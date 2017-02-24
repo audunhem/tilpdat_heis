@@ -9,14 +9,6 @@ var thisElevator = Elevators[0]
 
 //trenger noe ala thisElevator
 
-/*func RecieveNewState(a,b,c,d chan int){
-  select{
-  case c <- x:
-    //sett noe til noe
-  case c2 <- y:
-    //sett noe annet til noe annet
-  }
-}*/
 
 /*func CheckIfShouldStop(elevatorData ElevatorData) bool {
   switch {
@@ -68,8 +60,6 @@ func RemoveCompletedOrders(elevatorData ElevatorData) ElevatorData {
 
     if NoOrdersAboveCurrentFloor(elevatorData) {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0 //hvis de som skal opp ikke trykker videre, slettes denne, og det er litt uheldig
-        }
-      }
     }
 
   case DirnDown:
@@ -79,7 +69,6 @@ func RemoveCompletedOrders(elevatorData ElevatorData) ElevatorData {
 
     if NoOrdersBelowCurrentFloor(elevatorData) {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
-      }
     }
   }
   return elevatorData
@@ -216,16 +205,12 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
   case elevatorData.Direction == DirnUp:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
       return true
-    } else if elevatorData.Floor == N_FLOORS-1 {
-      return true
     } else if NoOrdersAboveCurrentFloor(elevatorData){
       return true
     }
 
   case elevatorData.Direction == DirnDown:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      return true
-    } else if elevatorData.Floor == 0 {
       return true
     } else if NoOrdersBelowCurrentFloor(elevatorData){
       return true
