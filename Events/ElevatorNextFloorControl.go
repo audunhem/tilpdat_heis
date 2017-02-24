@@ -66,10 +66,7 @@ func RemoveCompletedOrders(elevatorData ElevatorData) ElevatorData {
     elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
     elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
 
-    if elevatorData.Floor == N_FLOORS-1 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else if NoOrdersAboveCurrentFloor(elevatorData) {
+    if NoOrdersAboveCurrentFloor(elevatorData) {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0 //hvis de som skal opp ikke trykker videre, slettes denne, og det er litt uheldig
         }
       }
@@ -80,11 +77,7 @@ func RemoveCompletedOrders(elevatorData ElevatorData) ElevatorData {
     elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
     elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
 
-    if elevatorData.Floor == 0 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-
-    } else if NoOrdersBelowCurrentFloor(elevatorData) {
+    if NoOrdersBelowCurrentFloor(elevatorData) {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       }
     }
@@ -242,6 +235,9 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
 }
 
 func NoOrdersAboveCurrentFloor(elevatorData ElevatorData) bool{
+  if elevatorData.Floor == N_FLOORS-1 {
+    return true
+  }
   for i := elevatorData.Floor + 1; i < N_FLOORS; i++ {
     if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
       return false
@@ -251,6 +247,9 @@ func NoOrdersAboveCurrentFloor(elevatorData ElevatorData) bool{
 }
 
 func NoOrdersBelowCurrentFloor(elevatorData ElevatorData) bool{
+  if elevatorData.Floor == 0 {
+    return true
+  }
   for i := 0; i < elevatorData.Floor; i++ {
     if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
       return false
