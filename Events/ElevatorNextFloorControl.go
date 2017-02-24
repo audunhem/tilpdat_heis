@@ -18,7 +18,7 @@ var thisElevator = Elevators[0]
   }
 }*/
 
-func CheckIfShouldStop(elevatorData ElevatorData) bool {
+/*func CheckIfShouldStop(elevatorData ElevatorData) bool {
   switch {
   case elevatorData.Direction == DirnUp:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
@@ -54,36 +54,38 @@ func CheckIfShouldStop(elevatorData ElevatorData) bool {
     return false
   }
   return false
-}
+}*/
 
-func OrderCompleted(elevatorData ElevatorData) ElevatorData {
+
+//må kalles etter "dørene lukkes" og neste retning er satt
+func RemoveCompletedOrders(elevatorData ElevatorData) ElevatorData {
   switch elevatorData.Direction {
+
   case DirnUp:
+
+    elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
+    elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
+
     if elevatorData.Floor == N_FLOORS-1 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else {
-      for i := elevatorData.Floor + 1; i < N_FLOORS; i++ {
-        if elevatorData.Orders[i][ButtonCallUp] == 0 || elevatorData.Orders[i][ButtonCallDown] == 0 || elevatorData.Orders[i][ButtonInternal] == 0 {
-          elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
+    } else if NoOrdersAboveCurrentFloor(elevatorData) {
+      elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0 //hvis de som skal opp ikke trykker videre, slettes denne, og det er litt uheldig
         }
       }
     }
+
   case DirnDown:
+
+    elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
+    elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
+
     if elevatorData.Floor == 0 {
       elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
-      elevatorData.Orders[elevatorData.Floor][ButtonCallDown] = 0
-      elevatorData.Orders[elevatorData.Floor][ButtonInternal] = 0
-    } else {
-      for i := 0; i < elevatorData.Floor; i++ {
-        if elevatorData.Orders[i][ButtonCallUp] == 0 || elevatorData.Orders[i][ButtonCallDown] == 0 || elevatorData.Orders[i][ButtonInternal] == 0 {
-          elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
-        }
+
+    } else if NoOrdersBelowCurrentFloor(elevatorData) {
+      elevatorData.Orders[elevatorData.Floor][ButtonCallUp] = 0
       }
     }
   }
@@ -213,4 +215,46 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
   }
 
   return elevatorData
+}
+
+func CheckIfShouldStop(elevatorData ElevatorData) bool {
+  switch {
+
+  case elevatorData.Direction == DirnUp:
+    if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
+      return true
+    } else if elevatorData.Floor == N_FLOORS-1 {
+      return true
+    } else if NoOrdersAboveCurrentFloor(elevatorData){
+      return true
+    }
+
+  case elevatorData.Direction == DirnDown:
+    if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
+      return true
+    } else if elevatorData.Floor == 0 {
+      return true
+    } else if NoOrdersBelowCurrentFloor(elevatorData){
+      return true
+    }
+  }
+  return false
+}
+
+func NoOrdersAboveCurrentFloor(elevatorData ElevatorData) bool{
+  for i := elevatorData.Floor + 1; i < N_FLOORS; i++ {
+    if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
+      return false
+    }
+  }
+  return true
+}
+
+func NoOrdersBelowCurrentFloor(elevatorData ElevatorData) bool{
+  for i := 0; i < elevatorData.Floor; i++ {
+    if elevatorData.Orders[i][ButtonCallUp] != 0 || elevatorData.Orders[i][ButtonCallDown] != 0 || elevatorData.Orders[i][ButtonInternal] != 0 {
+      return false
+    }
+  }
+  return true
 }
