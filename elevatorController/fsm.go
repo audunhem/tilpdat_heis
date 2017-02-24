@@ -17,7 +17,7 @@ func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 	PrintOrderList(elevatorData)
 	if CheckIfShouldStop(elevatorData) == true {
 		FsmStopAtFloor()
-		elevatorData = OrderCompleted(elevatorData)
+		elevatorData = RemoveCompletedOrders(elevatorData)
 		PrintOrderList(elevatorData)
 		elevatorData = OrderSetNextDirection(elevatorData) //sett elevator til IDLE
 		//hvis det ikke er flere ordre
