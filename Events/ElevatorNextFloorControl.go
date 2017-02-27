@@ -200,16 +200,16 @@ func OrderSetNextDirection(elevatorStruct ElevatorData) ElevatorData {
 }
 
 func CheckIfShouldStop(elevatorData ElevatorData) bool {
-  switch {
+  switch elevatorData.Direction {
 
-  case elevatorData.Direction == DirnUp:
+  case DirnUp:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallUp] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
       return true
     } else if NoOrdersAboveCurrentFloor(elevatorData){
       return true
     }
 
-  case elevatorData.Direction == DirnDown:
+  case DirnDown:
     if elevatorData.Orders[elevatorData.Floor][ButtonCallDown] == 1 || elevatorData.Orders[elevatorData.Floor][ButtonInternal] == 1 {
       return true
     } else if NoOrdersBelowCurrentFloor(elevatorData){
