@@ -14,7 +14,7 @@ var ExternalOrderLights = make([]int, 0) //skal den være her eller i intern-del
 var Elevators = make([]ElevatorData, N_ELEVATORS)
 
 func CalculateSingleElevatorCost(elevator ElevatorData, order ElevatorOrder) int {
-  if int(elevator.Direction) == order.Direction {
+  if int(elevator.Direction) == order.Direction { //her blir det krøll
     switch elevator.Direction {
     case DirnUp:
       if order.Floor > elevator.Floor {
@@ -42,17 +42,17 @@ func CalculateSingleElevatorCost(elevator ElevatorData, order ElevatorOrder) int
 
 func FindBestElevator(order ElevatorOrder) {
   var minCost = 1<<15 - 1
-  var elevatorNumber = -1
+  var elevatorNumber = -1 //kanksje fint å bruke ID her?
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].Initiated {
       var thisCost = CalculateSingleElevatorCost(Elevators[i], order)
       if thisCost < minCost {
         minCost = thisCost
-        elevatorNumber = i
+        order.ElevatorID = Elevators[i].ID
       }
     }
   }
-  PlaceExternalOrder(elevatorNumber, order)
+  PlaceExternalOrder(order) //kan bare bruke ID-en til ordren
 }
 
 //Dette må også ordnes 23feb
@@ -68,14 +68,19 @@ func PlaceInternalOrder(elevatorData ElevatorData, floor int) ElevatorData {
   return elevatorData
 }
 
-func PlaceExternalOrder(elevatorNumber int, order ElevatorOrder) {
-  if elevatorNumber == THIS_ELEVATOR && !NETWORK_DOWN {
-    Elevators[elevatorNumber].Orders[order.Floor][order.Direction] = 1
-    //sort.Ints(Elevators[elevatorNumber].ExternalOrders.Floor) må kunne sortere knappene
+func PlaceExternalOrder(order ElevatorOrder) {
+  if order.ElevatorID != nil {
+    for i := 0 ; i < N_ELEVATORS; i++ {
+      if order.ElevatorID == Elevators[i].ID {
+        Elevators[i].Orders[order.Floor][order.Direction] = 1
+      }
+    }
   } else {
-    //net.SendNewOrder()
+    FindBestElevator(order)
   }
 }
+
+//trenger noe lurt som sikrer at eksterne lys blir riktig
 
 func SuccessfulPlacementConfirmation(elevatorNumber int, order ElevatorOrder) bool {
   if Elevators[elevatorNumber].Orders[order.Floor][order.Direction] == 1 {
@@ -88,13 +93,16 @@ func SuccessfulPlacementConfirmation(elevatorNumber int, order ElevatorOrder) bo
 
 //tror det er best om bare en av heisene omfordeler ordre
 
-/*func RedestributeExternalOrders(lostElevator ElevatorData) {
-  for i := 0; i < len(lostElevator.ExternalOrders); i++ {
-    FindBestElevator(lostElevator.ExternalOrders[i])
+func RedestributeExternalOrders(lostElevator ElevatorData) {
+  for i := 0; i < N_FLOORS; i++ {
+    for j := 0; j < 2 ; j++ {
+      if lostElevator.Orders[i][j] == 1 {
+        newOrder := Order{i,j,nil}
+        FindBestElevator(newOrder)
+      }
+    }
   }
-}*/
-
-//må skrive om
+}
 
 func DenyNewExternalOrders() {
   NETWORK_DOWN = true
