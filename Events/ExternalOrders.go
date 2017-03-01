@@ -5,6 +5,8 @@ import (
   . "./../driver"
 )
 
+const MASTER = false
+
 const THIS_ELEVATOR = 1
 
 var NETWORK_DOWN = false //hvordan er det bra å bruke denne variablen
@@ -69,7 +71,7 @@ func PlaceInternalOrder(elevatorData ElevatorData, floor int) ElevatorData {
 }
 
 func PlaceExternalOrder(order ElevatorOrder) {
-  if order.ElevatorID != nil {
+  if order.ElevatorID != nil {
     for i := 0 ; i < N_ELEVATORS; i++ {
       if order.ElevatorID == Elevators[i].ID {
         Elevators[i].Orders[order.Floor][order.Direction] = 1
@@ -94,11 +96,13 @@ func SuccessfulPlacementConfirmation(elevatorNumber int, order ElevatorOrder) bo
 //tror det er best om bare en av heisene omfordeler ordre
 
 func RedestributeExternalOrders(lostElevator ElevatorData) {
-  for i := 0; i < N_FLOORS; i++ {
-    for j := 0; j < 2 ; j++ {
-      if lostElevator.Orders[i][j] == 1 {
-        newOrder := Order{i,j,nil}
-        FindBestElevator(newOrder)
+  if MASTER {
+    for i := 0; i < N_FLOORS; i++ {
+      for j := 0; j < 2 ; j++ {
+        if lostElevator.Orders[i][j] == 1 {
+          newOrder := Order{i,j,nil}
+          FindBestElevator(newOrder)
+        }
       }
     }
   }
@@ -119,6 +123,18 @@ func UpdateElevatorData(elevator ElevatorData) {
       Elevators[i] = elevator
     }
   }
+}
+
+func AllExternalOrders() int {
+  var allExternalOrders[N_FLOORS][N_BUTTONS] int
+  for i := 0; i < N_ELEVATORS; i++ {
+    for j := 0; i < N_FLOORS; i++ {
+      for k := 0; i < 2; i++ {
+        allExternalOrders[j][k] = Elevators[i].Orders[j][k]
+      }
+    }
+  }
+  return allExternalOrders
 }
 
 //------------------------------------------------------------------------------
