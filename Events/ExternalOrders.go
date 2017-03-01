@@ -104,13 +104,14 @@ func RedestributeExternalOrders(lostElevator ElevatorData) {
   }
 }
 
-func DenyNewExternalOrders() {
+func DenyNewExternalOrders(elevatorData ElevatorData) {//on network fall out
+  for i := 0; i < N_FLOORS; i++ {
+    elevatorData.Orders[i][0] = 0
+    elevatorData.Orders[i][1] = 0
+  }
   NETWORK_DOWN = true
 }
 
-func AllowNewExternalOrders() {
-  NETWORK_DOWN = false
-}
 
 func UpdateElevatorData(elevator ElevatorData) {
   for i := 0; i < N_ELEVATORS; i++ {
