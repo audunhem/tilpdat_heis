@@ -1,20 +1,29 @@
-# Declaration of variables
+EXECUTABLE = tilpdat_heis
+
 CC = gcc
-CC_FLAGS = -w
+CFLAGS = -Wall -Wextra -g -std=gnu11
+LDFLAGS = -lcomedi -lm
 
-# File names
-EXEC = run
-SOURCES = $(wildcard *.c)
-OBJECTS = $(SOURCES:.cpp=.o)
+SOURCES := $(patsubst ./%, %, $(shell find . -name '*.c'))
+OBJECTS = $(addprefix $(OBJDIR)/, $(SOURCES:.c=.o))
 
-# Main target
-$(EXEC): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(EXEC)
 
-# To obtain object files
-%.o: %.c
-	$(CC) -c $(CC_FLAGS) $< -o $@
+OBJDIR = obj
 
-# To remove generated files
+all: $(EXECUTABLE)
+
+rebuild:	clean all
+
 clean:
-	rm -f $(EXEC) $(OBJECTS)
+	rm -f $(EXECUTABLE)
+	rm -rf $(OBJDIR)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) -o $@ -c $(CFLAGS) $<
+
+	
+.PHONY: all rebuild clean
