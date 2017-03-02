@@ -120,6 +120,8 @@ func UpdateElevatorData(elevator ElevatorData) {
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].ID == elevator.ID {
       Elevators[i] = elevator
+    } else {
+      Elevators[0] = elevator
     }
   }
 }
