@@ -1,6 +1,7 @@
 package main
 
 import (
+	. "./Events"
 	. "./Network"
 	. "./Network/network/peers"
 	. "./driver"
@@ -10,11 +11,6 @@ import (
 	/*"time" */)
 
 func main() {
-	NetworkTest()
-
-}
-
-/*func main1() {
 	elevatorData := InitializeElevator()
 
 	updateElevatorRxCh := make(chan ElevatorData)
@@ -30,7 +26,7 @@ func main() {
 	externalButtonCh := make(chan ElevatorOrder, 10)
 	internalButtonCh := make(chan int, 10)
 
-	go RunNetwork(updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
+	go RunNetwork(elevatorData, updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
@@ -44,7 +40,7 @@ func main() {
 
 		case msg2 := <-externalButtonCh:
 			//elevatorData = fsmExternalButtonPressed(elevatorData, msg)
-			elevatorData = FsmExternalButtonPressed(elevatorData, msg2)
+			elevatorData = FsmExternalButtonPressed(elevatorData, msg2, newOrderTxCh)
 
 			PrintOrderList(elevatorData)
 
@@ -61,12 +57,17 @@ func main() {
 			//elevatorData = OrderReceivedOrder(elevatorData, msg)
 		case msg6 := <-peerUpdateCh:
 			fmt.Println(msg6)
-			//elevatorData = PeerUpdate(elevatorData, msg)
+			OnlineElevatorsUpdate(msg6)
 
 		}
 	}
 
-}*/
+}
+
+func main1() {
+	NetworkTest()
+
+}
 
 func NetworkTest() {
 
@@ -85,7 +86,7 @@ func NetworkTest() {
 	externalButtonCh := make(chan ElevatorOrder, 50)
 	internalButtonCh := make(chan int, 50)
 
-	go RunNetwork(updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
+	go RunNetwork(elevatorData, updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
 
 	go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 

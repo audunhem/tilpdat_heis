@@ -2,6 +2,8 @@ package elevatorController
 
 import (
 	. "./../driver"
+	"fmt"
+	"net"
 )
 
 func InitializeElevator() ElevatorData {
@@ -18,6 +20,7 @@ func InitializeElevator() ElevatorData {
 	}
 	var initializedData ElevatorData
 
+	initializedData.ID = getMacAddr()
 	initializedData.Floor = GetFloorSensorSignal()
 	initializedData.Direction = GetMotorDirection()
 	initializedData.Status = 0
@@ -75,29 +78,27 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrd
 
 func getMacAddr() string {
 
-	  var currentNetworkHardwareName string
+	var currentNetworkHardwareName string
 
-	  interfaces, _ := net.Interfaces()
-	  for _, interf := range interfaces {
-	    currentNetworkHardwareName = interf.Name
+	interfaces, _ := net.Interfaces()
+	for _, interf := range interfaces {
+		currentNetworkHardwareName = interf.Name
 
-	  }
+	}
 
-	  // extract the hardware information base on the interface name
-	  // capture above
-	  netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
+	// extract the hardware information base on the interface name
+	// capture above
+	netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
 
-	  if err != nil {
-	    fmt.Println(err)
-	  }
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	  macAddress := netInterface.HardwareAddr
+	macAddress := netInterface.HardwareAddr
+	id := macAddress.String()
 
-	  return macAddress.String()
+	return id
 }
-
-
-
 
 /*
 func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {

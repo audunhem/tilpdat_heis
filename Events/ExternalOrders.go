@@ -74,19 +74,20 @@ func CalculateSingleElevatorCost(elevator ElevatorData, order ElevatorOrder) int
   return -1
 }
 
-func FindBestElevator(order ElevatorOrder) {
+func FindBestElevator(order ElevatorOrder) string {
   var minCost = 1<<15 - 1
+  var ID string
   //var elevatorNumber = -1 //kanksje fint å bruke ID her?
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].Initiated {
       var thisCost = CalculateSingleElevatorCost(Elevators[i], order)
       if thisCost < minCost {
         minCost = thisCost
-        order.ElevatorID = Elevators[i].ID
+        ID = Elevators[i].ID
       }
     }
   }
-  PlaceExternalOrder(order) //kan bare bruke ID-en til ordren
+  return ID //kan bare bruke ID-en til ordren
 }
 
 //Dette må også ordnes 23feb
@@ -102,16 +103,16 @@ func PlaceInternalOrder(elevatorData ElevatorData, floor int) ElevatorData {
   return elevatorData
 }
 
-func PlaceExternalOrder(order ElevatorOrder) {
-  if order.ElevatorID != "" {
-    for i := 0; i < N_ELEVATORS; i++ {
-      if order.ElevatorID == Elevators[i].ID {
-        Elevators[i].Orders[order.Floor][order.Direction] = 1
-      }
+func PlaceExternalOrder(elevatorData ElevatorData, newButtonPressed ElevatorOrder, newOrderTxCh chan ElevatorOrder) ElevatorData {
+  ID := FindBestElevator(newButtonPressed)
+
+  for i := 0; i < N_ELEVATORS; i++ {
+    if Elevators[i].ID == ID {
+      Elevators[i].Orders[newButtonPressed.Floor][newButtonPressed.Direction] = 1
+      return Elevators[i]
     }
-  } else {
-    FindBestElevator(order)
   }
+  return Elevators[0]
 }
 
 //trenger noe lurt som sikrer at eksterne lys blir riktig
@@ -152,14 +153,13 @@ func UpdateElevatorData(elevator ElevatorData) {
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].ID == elevator.ID {
       Elevators[i] = elevator
-      SetAllLights(AllExternalOrders())
-    } else {//fjernes når ting fungerer
+    } else { //fjernes når ting fungerer
       Elevators[0] = elevator
     }
   }
 }
 
-func AllExternalOrders(thisElevatorData ElevatorData) [N_FLOORS][N_BUTTONS]int {
+func AllExternalOrders() [N_FLOORS][N_BUTTONS]int {
   var allExternalOrders [N_FLOORS][N_BUTTONS]int
   for i := 0; i < N_ELEVATORS; i++ {
     for j := 0; i < N_FLOORS; i++ {

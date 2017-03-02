@@ -11,9 +11,30 @@ import (
   //"strconv"
 )
 
-func RunNetwork(elevatorData ElevatorDataupdateTxCh chan ElevatorData, updateRxCh chan ElevatorData, orderTxCh chan ElevatorOrder, orderRxCh chan ElevatorOrder, peerUpdateCh chan peers.PeerUpdate, peerTxEnable chan bool) {
+func RunNetwork(elevatorData ElevatorData, updateTxCh chan ElevatorData, updateRxCh chan ElevatorData, orderTxCh chan ElevatorOrder, orderRxCh chan ElevatorOrder, peerUpdateCh chan peers.PeerUpdate, peerTxEnable chan bool) {
   // First we need to asssign an ID to the elevator. We assume
   // That there can only be N_ELEV elevators at any time
+
+  var currentNetworkHardwareName string
+
+  interfaces, _ := net.Interfaces()
+  for _, interf := range interfaces {
+    currentNetworkHardwareName = interf.Name
+
+  }
+
+  // extract the hardware information base on the interface name
+  // capture above
+  netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
+
+  if err != nil {
+    fmt.Println(err)
+  }
+
+  macAddress := netInterface.HardwareAddr
+  id := macAddress.String()
+
+  fmt.Println(id)
 
   go peers.Transmitter(15647, elevatorData.ID, peerTxEnable)
   go peers.Receiver(15647, peerUpdateCh)
