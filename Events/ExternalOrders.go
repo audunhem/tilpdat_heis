@@ -159,7 +159,7 @@ func UpdateElevatorData(elevator ElevatorData) {
   }
 }
 
-func AllExternalOrders(thisElevatorData ElevatorData) [N_FLOORS][N_BUTTONS]int {
+func AllExternalOrders() [N_FLOORS][N_BUTTONS]int {
   var allExternalOrders [N_FLOORS][N_BUTTONS]int
   for i := 0; i < N_ELEVATORS; i++ {
     for j := 0; i < N_FLOORS; i++ {
