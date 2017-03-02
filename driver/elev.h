@@ -8,8 +8,30 @@
 
 // Number of floors
 #define N_FLOORS 4
+#define N_BUTTONS 3
 
+typedef enum tag_elev_motor_direction {
+    DIRN_DOWN = -1,
+    DIRN_STOP = 0,
+    DIRN_UP = 1
+} elev_motor_direction_t;
 
+typedef enum tag_elev_lamp_type {
+    BUTTON_CALL_UP = 0,
+    BUTTON_CALL_DOWN = 1,
+    BUTTON_COMMAND = 2
+} elev_button_type_t;
+
+struct Elevator_data {
+  int current_floor;
+  elev_motor_direction_t direction;
+  int orders[N_FLOORS][3];
+};
+
+struct Button_press {
+  int floor;
+  elev_button_type_t button;
+};
 
 /**
   Initialize elevator.
@@ -22,11 +44,7 @@ int elev_init(void);
 /**
   Motor direction for function elev_set_motor_direction().
 */
-typedef enum tag_elev_motor_direction {
-    DIRN_DOWN = -1,
-    DIRN_STOP = 0,
-    DIRN_UP = 1
-} elev_motor_direction_t;
+
 
 
 
@@ -67,11 +85,6 @@ int elev_get_stop_signal(void);
   @param value Non-zero value turns lamp on, 0 turns lamp off.
 */
 
-struct Elevator_data {
-  int current_floor;
-  elev_motor_direction_t direction;
-  int orders[N_FLOORS][3];
-};
 
 void elev_set_stop_lamp(int value);
 
@@ -97,11 +110,7 @@ void elev_set_floor_indicator(int floor);
 /**
   Button types for function elev_set_button_lamp() and elev_get_button().
 */
-typedef enum tag_elev_lamp_type {
-    BUTTON_CALL_UP = 0,
-    BUTTON_CALL_DOWN = 1,
-    BUTTON_COMMAND = 2
-} elev_button_type_t;
+
 
 
 
