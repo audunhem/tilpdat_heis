@@ -3,31 +3,37 @@ package Network
 import (
   . "../driver/"
   "./network/bcast"
-  "./network/localip"
   "./network/peers"
   //"flag"
   "fmt"
-  "os"
+  "net"
+  //"os"
   //"strconv"
-  //"time"
 )
 
 func RunNetwork(updateTxCh chan ElevatorData, updateRxCh chan ElevatorData, orderTxCh chan ElevatorOrder, orderRxCh chan ElevatorOrder, peerUpdateCh chan peers.PeerUpdate, peerTxEnable chan bool) {
   // First we need to asssign an ID to the elevator. We assume
   // That there can only be N_ELEV elevators at any time
 
-  //We will use functionality provided by the Network-Go module
+  var currentNetworkHardwareName string
 
-  ip, err := localip.LocalIP()
+  interfaces, _ := net.Interfaces()
+  for _, interf := range interfaces {
+    currentNetworkHardwareName = interf.Name
 
-  if err != nil {
-    panic(err)
   }
 
-  //Assign a unique ID to the elevator
-  id := fmt.Sprintf("%s-%d", ip, os.Getpid())
+  // extract the hardware information base on the interface name
+  // capture above
+  netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
 
-  //This is to send the ALIVE-signals
+  if err != nil {
+    fmt.Println(err)
+  }
+
+  macAddress := netInterface.HardwareAddr
+
+  id := macAddress.String()
 
   go peers.Transmitter(15647, id, peerTxEnable)
   go peers.Receiver(15647, peerUpdateCh)
