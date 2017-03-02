@@ -1,19 +1,51 @@
 package Events
 
 import (
-  "../Network/network/peers"
+  . "../Network/network/peers"
   . "./../driver"
+  "fmt"
 )
 
 const MASTER = false
 
-const THIS_ELEVATOR = 1
+var ThisElevatorID = ""
 
 var NETWORK_DOWN = false //hvordan er det bra å bruke denne variablen
 
 var ExternalOrderLights = make([]int, 0) //skal den være her eller i intern-delen?
 
 var Elevators = make([]ElevatorData, N_ELEVATORS)
+
+func OnlineElevatorsUpdate(onlineElevatorList PeerUpdate) {
+
+  if onlineElevatorList.New == "" {
+
+    for i := 0; i < N_ELEVATORS; i++ {
+      if onlineElevatorList.Lost[len(onlineElevatorList.Lost)-1] == Elevators[i].ID {
+        Elevators[i].Initiated = false
+      }
+    }
+  } else if onlineElevatorList.New == onlineElevatorList.Peers[0] {
+    Elevators[0].ID = onlineElevatorList.New
+    ThisElevatorID = onlineElevatorList.New
+  } else {
+
+    for i := 0; i < N_ELEVATORS; i++ {
+      if Elevators[i].ID == onlineElevatorList.New {
+        Elevators[i].Initiated = true
+      }
+    }
+    for i := 0; i < N_ELEVATORS; i++ {
+      if Elevators[i].ID == "" {
+        Elevators[i].ID = onlineElevatorList.New
+        Elevators[i].Initiated = true
+      } else {
+        fmt.Print("Noe er galt i OnlineElevatorsUpdate")
+      }
+    }
+  }
+
+}
 
 func CalculateSingleElevatorCost(elevator ElevatorData, order ElevatorOrder) int {
   if int(elevator.Direction) == order.Direction { //her blir det krøll
@@ -143,7 +175,7 @@ func AllExternalOrders(thisElevatorData ElevatorData) [N_FLOORS][N_BUTTONS]int {
 //Lagt til av Erling
 
 //In case of updated list of connected elevators
-func EventUpdatedPeers(updatedConnectionData peers.PeerUpdate) {
+func EventUpdatedPeers(updatedConnectionData PeerUpdate) {
 
   //Either we have fewer connections or more connections. Either way
   //we want to update our
