@@ -10,7 +10,13 @@ import (
 	/*"time" */)
 
 
+
 func main() {
+	testNetwork()
+
+}
+
+func main1() {
 	elevatorData := InitializeElevator()
 
 	updateElevatorRxCh := make(chan ElevatorData)
