@@ -1,0 +1,40 @@
+Use case-beskrivelse
+
+Vi skal ha en heis.
+
+Trigger:
+- Heisen får beskjed om å gå til en etasje
+- Heisen får beskjed om å bringe passasjer til ny etasje
+
+Aktører:
+- Heisbruker
+- Heistekniker
+
+Forhåndskrav:
+- Heisen fungerer
+- Heisen står i en kjent etasje
+
+Mål (suksessfulle konklusjoner):
+- Passasjerer bringes til sin etasje
+	- Så effektivt som mulig
+
+Mislykkede konklusjoner:
+- Det trykkes på stoppknapp -> heis stopper, åpner dør om i en etasje
+
+Utføringssteg:
+- Bruker trykker på ekstern knapp
+- Heis registrerer trykk, 
+	- Kommer med en gang hvis tilgjengelig
+		- Hvis ikke stopper den når den er på vei i riktig retning
+- Dør åpnes i riktig etasje, holdes åpen i 3. sekunder
+- Bruker går inn, trykker på intern knapp
+- Heis kjører til riktig etasje
+	- Hvis stoppknapp trykkes inn stopper heisen, og alle ordre slettes
+	    - Hvis stoppknapp trykkes inn i en etasje holdes dør åpen i tre sekunder etter knappen er trykket inn
+- I riktig etasje åpnes døren i tre sek
+- Bruker går ut av heisen
+
+
+
+
+
