@@ -9,6 +9,7 @@ import (
 	//"fmt"
 	/*"time" */)
 
+
 func main() {
 	elevatorData := InitializeElevator()
 
@@ -63,91 +64,61 @@ func main() {
 
 }
 
-/*
 
-func main2() {
-	updatedDataFSM := make(chan ElevatorData)
-	currentFloorChannel := make(chan int)
-	newOrderButtonTypeChannel := make(chan ButtonType)
-	newOrderFloorChannel := make(chan int)
+func NetworkTest() {
 
-	var updatedData ElevatorData
+elevatorData := InitializeElevator()
 
-	var updatedDataPtr *ElevatorData
+updateElevatorRxCh := make(chan ElevatorData)
+updateElevatorTxCh := make(chan ElevatorData)
 
-	updatedDataPtr = &updatedData
-	previousData := InitializeElevator()
-	go ReadAllSensors(previousData, updatedDataFSM, currentFloorChannel, newOrderButtonTypeChannel, newOrderFloorChannel)
-	go updateDataFromSensor(updatedDataFSM, updatedDataPtr)
-	go print(currentFloorChannel)
-	fmt.Println("testmain")
+newOrderTxCh := make(chan ElevatorOrder)
+newOrderRxCh := make(chan ElevatorOrder)
 
-	GoToFloor(1, updatedDataPtr)
+peerUpdateCh := make(chan PeerUpdate)
+peerTxEnableCh := make(chan bool)
 
-	GoToFloor(3, updatedDataPtr)
-}
+arriveAtFloorCh := make(chan int)
+externalButtonCh := make(chan ElevatorOrder, 10)
+internalButtonCh := make(chan int, 10)
 
-func print(currentFloorChannel chan int) {
+go RunNetwork(updateElevatorTxCh, updateElevatorRxCh, newOrderTxCh, newOrderRxCh, peerUpdateCh, peerTxEnableCh)
 
-	for {
-		select {
-		case msg1 := <-currentFloorChannel:
-			fmt.Println(msg1)
+go ReadAllSensors2(arriveAtFloorCh, externalButtonCh, internalButtonCh)
 
-		default:
-			time.Sleep(1 * time.Second)
-		}
-
-	}
-}
-
-func updateDataFromSensor(updatedDataFSM chan ElevatorData, updatedData *ElevatorData) {
-
-	for {
-		select {
-
-		case update := <-updatedDataFSM:
-
-			(*updatedData) = update
-		}
-
-	}
-
-}
-
-/*InitElevator()
-fmt.Println("Press STOP button to stop elevator and exit program.")
-
-GoToFloor(2)
-
-fmt.Println(GetMotorDirection())
-GoToFloor(1)
-
-for{
-	if GetStopSignal() == 1 {
-		SetMotorDirection(DirnStop)
-
-	}
-}*/
-
-/*SetMotorDirection(DirnUp)
-
-SetFloorIndicator(3)
 for {
-	GetButtonSignal(0, 2)
-	if GetFloorSensorSignal() == N_FLOORS-1 {
-		SetMotorDirection(DirnDown)
+	select {
 
-	} else if GetFloorSensorSignal() == 0 {
-		SetMotorDirection(DirnUp)
-	}
+	case msg1 := <-arriveAtFloorCh:
+		//fsmArriveAtFloor(msg)
 
-	if GetFloorSensorSignal() == N_FLOORS-1 {
-	}
-	// Stop elevator and exit program if the stop button is pressed
-	if GetStopSignal() == 1 {
-		SetMotorDirection(DirnStop)
+		elevatorData = FsmArriveAtFloor(elevatorData, msg1)
+
+	case msg2 := <-externalButtonCh:
+		var testOrder ElevatorOrder
+		testOrder.Floor = 0
+		testOrder.Direction = 0
+		testOrder.ElevatorID = "test"
+
+		newOrderTxCh <- testOrder
+
+	case msg3 := <-internalButtonCh:
+		updateElevatorTxCh <-elevatorData
+
+	case msg4 := <-updateElevatorRxCh:
+		fmt.Println("Elevator Update received")
+		fmt.Println(msg4)
+		//elevatorData = OrderReceivedUpdate(elevatorData, msg)
+
+	case msg5 := <-newOrderRxCh:
+		fmt.Println("New order received")
+		fmt.Println(msg5)
+		//elevatorData = OrderReceivedOrder(elevatorData, msg)
+	case msg6 := <-peerUpdateCh:
+		fmt.Println(msg6)
+		//elevatorData = PeerUpdate(elevatorData, msg)
+
 	}
 }
 
-*/
+}
