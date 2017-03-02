@@ -152,14 +152,14 @@ func UpdateElevatorData(elevator ElevatorData) {
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].ID == elevator.ID {
       Elevators[i] = elevator
-    } else {
+      SetAllLights(AllExternalOrders())
+    } else {//fjernes når ting fungerer
       Elevators[0] = elevator
     }
   }
 }
 
 func AllExternalOrders(thisElevatorData ElevatorData) [N_FLOORS][N_BUTTONS]int {
-  UpdateElevatorData(thisElevatorData)
   var allExternalOrders [N_FLOORS][N_BUTTONS]int
   for i := 0; i < N_ELEVATORS; i++ {
     for j := 0; i < N_FLOORS; i++ {
