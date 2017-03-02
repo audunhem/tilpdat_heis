@@ -59,7 +59,7 @@ int main(){
   				}
   			}
   		}*/
-      set_lights(&elevator);
+      set_lights(elevator.orders);
   	}
   return 0;
 }

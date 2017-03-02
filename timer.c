@@ -3,7 +3,7 @@
 
 
 
-static time_t end_time;
+static time_t start_time;
 static double duration;
 static bool timer_active;
 

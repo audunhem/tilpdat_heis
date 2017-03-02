@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 void arrive_at_floor(struct Elevator_data* elevator){
-  elev_set_floor_indicator(elevator.current_floor);
-	if (check_if_should_stop(&elevator) == true) {
+  elev_set_floor_indicator(elevator->current_floor);
+	if (check_if_should_stop(elevator) == true) {
     elev_set_motor_direction(DIRN_STOP);
   	elev_set_door_open_lamp(1);
     //start en timer
@@ -13,28 +13,28 @@ void arrive_at_floor(struct Elevator_data* elevator){
 }
 
 void button_pressed(struct Button_press order, struct Elevator_data* elevator){
-	elevator.order[order.floor][order.button] = 1;
-	if elevator.direction == DIRN_STOP {
+	elevator->orders[order.floor][order.button] = 1;
+	if (elevator->direction == DIRN_STOP) {
 		printf("IDLE");
-		set_next_direction(&elevator);
+    elev_set_motor_direction(next_motor_direction(elevator));
 	}
-  set_lights(&elevator);
+  set_lights(elevator->orders);
 }
 
 void leave_floor(struct Elevator_data* elevator){
-  remove_completed_orders(&elevator);
-  set_lights(&elevator.orders);
-  elev_set_motor_direction(next_motor_direction(&elevator));
+  remove_completed_orders(elevator);
+  set_lights(elevator->orders);
+  elev_set_motor_direction(next_motor_direction(elevator));
 }
 
-void set_lights(struct Elevator_data* elevator){
+void set_lights(int orders[N_FLOORS][N_BUTTONS]){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
-      elev_set_button_lamp(j, i, elevator.orders[i][j]);
+      elev_set_button_lamp(j, i, orders[i][j]);
     }
   }
 }
-void initialize_elevator(struct elevator){
+void initialize_elevator(struct Elevator_data* elevator){
   elev_init();
 
 	if (elev_get_floor_sensor_signal() == -1) {
