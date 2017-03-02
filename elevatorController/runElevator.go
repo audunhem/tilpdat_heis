@@ -2,6 +2,8 @@ package elevatorController
 
 import (
 	. "./../driver"
+	"fmt"
+	"net"
 )
 
 func InitializeElevator() ElevatorData {
@@ -18,6 +20,7 @@ func InitializeElevator() ElevatorData {
 	}
 	var initializedData ElevatorData
 
+	initializedData.ID = getMacAddr()
 	initializedData.Floor = GetFloorSensorSignal()
 	initializedData.Direction = GetMotorDirection()
 	initializedData.Status = 0
@@ -71,6 +74,30 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrd
 	//Dette er egentlig alt denne funksjonen bør gjøre. Vi må finne på en god løsning på utfordringen av polling av knapper. Hvordan fungerer det egentlig?
 	//Vil vi sende 1000 beskjeder om trykket inn knapp dersom en knapp holdes inn i 100ms?? MEst sannsynlig ikke
 
+}
+
+func getMacAddr() string {
+
+	var currentNetworkHardwareName string
+
+	interfaces, _ := net.Interfaces()
+	for _, interf := range interfaces {
+		currentNetworkHardwareName = interf.Name
+
+	}
+
+	// extract the hardware information base on the interface name
+	// capture above
+	netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	macAddress := netInterface.HardwareAddr
+	id := macAddress.String()
+
+	return id
 }
 
 /*
