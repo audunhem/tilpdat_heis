@@ -27,10 +27,10 @@ func FsmArriveAtFloor(elevatorStruct ElevatorData, floor int) ElevatorData {
 	return elevatorData
 }
 
-func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder) ElevatorData {
+func FsmExternalButtonPressed(elevatorStruct ElevatorData, newButtonPressed ElevatorOrder, newOrderTxCh chan ElevatorOrder) ElevatorData {
 
 	elevatorData := elevatorStruct
-	elevatorData = PlaceExternalOrder2(elevatorData, newButtonPressed)
+	elevatorData = PlaceExternalOrder(elevatorData, newButtonPressed, newOrderTxCh)
 
 	if elevatorData.Status == StatusIdle {
 		fmt.Println("IDLE")
