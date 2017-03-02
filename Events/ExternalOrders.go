@@ -44,7 +44,7 @@ func CalculateSingleElevatorCost(elevator ElevatorData, order ElevatorOrder) int
 
 func FindBestElevator(order ElevatorOrder) {
   var minCost = 1<<15 - 1
-  var elevatorNumber = -1 //kanksje fint å bruke ID her?
+  //var elevatorNumber = -1 //kanksje fint å bruke ID her?
   for i := 0; i < N_ELEVATORS; i++ {
     if Elevators[i].Initiated {
       var thisCost = CalculateSingleElevatorCost(Elevators[i], order)
@@ -71,8 +71,8 @@ func PlaceInternalOrder(elevatorData ElevatorData, floor int) ElevatorData {
 }
 
 func PlaceExternalOrder(order ElevatorOrder) {
-  if order.ElevatorID != nil {
-    for i := 0 ; i < N_ELEVATORS; i++ {
+  if order.ElevatorID != "" {
+    for i := 0; i < N_ELEVATORS; i++ {
       if order.ElevatorID == Elevators[i].ID {
         Elevators[i].Orders[order.Floor][order.Direction] = 1
       }
@@ -98,9 +98,9 @@ func SuccessfulPlacementConfirmation(elevatorNumber int, order ElevatorOrder) bo
 func RedestributeExternalOrders(lostElevator ElevatorData) {
   if MASTER {
     for i := 0; i < N_FLOORS; i++ {
-      for j := 0; j < 2 ; j++ {
+      for j := 0; j < 2; j++ {
         if lostElevator.Orders[i][j] == 1 {
-          newOrder := Order{i,j,nil}
+          newOrder := ElevatorOrder{i, j, ""}
           FindBestElevator(newOrder)
         }
       }
@@ -108,14 +108,13 @@ func RedestributeExternalOrders(lostElevator ElevatorData) {
   }
 }
 
-func DenyNewExternalOrders(elevatorData ElevatorData) {//on network fall out
+func DenyNewExternalOrders(elevatorData ElevatorData) { //on network fall out
   for i := 0; i < N_FLOORS; i++ {
     elevatorData.Orders[i][0] = 0
     elevatorData.Orders[i][1] = 0
   }
   NETWORK_DOWN = true
 }
-
 
 func UpdateElevatorData(elevator ElevatorData) {
   for i := 0; i < N_ELEVATORS; i++ {
@@ -125,8 +124,9 @@ func UpdateElevatorData(elevator ElevatorData) {
   }
 }
 
-func AllExternalOrders() int {
-  var allExternalOrders[N_FLOORS][N_BUTTONS] int
+func AllExternalOrders(thisElevatorData ElevatorData) [N_FLOORS][N_BUTTONS]int {
+  UpdateElevatorData(thisElevatorData)
+  var allExternalOrders [N_FLOORS][N_BUTTONS]int
   for i := 0; i < N_ELEVATORS; i++ {
     for j := 0; i < N_FLOORS; i++ {
       for k := 0; i < 2; i++ {
