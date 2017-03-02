@@ -73,6 +73,32 @@ func ReadAllSensors2(arriveAtFloorCh chan int, externalButtonCh chan ElevatorOrd
 
 }
 
+func getMacAddr() string {
+
+	  var currentNetworkHardwareName string
+
+	  interfaces, _ := net.Interfaces()
+	  for _, interf := range interfaces {
+	    currentNetworkHardwareName = interf.Name
+
+	  }
+
+	  // extract the hardware information base on the interface name
+	  // capture above
+	  netInterface, err := net.InterfaceByName(currentNetworkHardwareName)
+
+	  if err != nil {
+	    fmt.Println(err)
+	  }
+
+	  macAddress := netInterface.HardwareAddr
+
+	  return macAddress.String()
+}
+
+
+
+
 /*
 func ReadAllSensors(previousData ElevatorData, updatedDataFSM chan ElevatorData, currentFloorChannel chan int /*currentDirection chan MotorDirection,, newOrderButtonTypeChannel chan ButtonType, newOrderFloorChannel chan int) {
 	//check all sensors.
