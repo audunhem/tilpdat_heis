@@ -25,7 +25,7 @@ typedef enum tag_elev_lamp_type {
 struct Elevator_data {
   int current_floor;
   elev_motor_direction_t direction;
-  int orders[N_FLOORS][3];
+  int orders[N_FLOORS][N_BUTTONS];
 };
 
 struct Button_press {

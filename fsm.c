@@ -1,6 +1,7 @@
 #include "driver/elev.h"
 #include "orders.h"
 #include "fsm.h"
+#include "timer.h"
 #include <stdio.h>
 
 void arrive_at_floor(struct Elevator_data* elevator){
@@ -8,6 +9,7 @@ void arrive_at_floor(struct Elevator_data* elevator){
 	if (check_if_should_stop(elevator) == true) {
     elev_set_motor_direction(DIRN_STOP);
   	elev_set_door_open_lamp(1);
+    start_timer(3.0);
     //start en timer
 	}
 }
@@ -39,8 +41,12 @@ void initialize_elevator(struct Elevator_data* elevator){
 
 	if (elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_UP);
+    elevator->direction = DIRN_UP;
 		while (elev_get_floor_sensor_signal() == -1){
-      elev_set_motor_direction(DIRN_STOP);
+      //do nothing
     }
+    elev_set_motor_direction(DIRN_STOP);
+    elevator->direction = DIRN_STOP;
+    elevator->current_floor = elev_get_floor_sensor_signal();
 	}
 }
