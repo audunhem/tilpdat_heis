@@ -5,6 +5,7 @@
 #include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 void print_orders(struct Elevator_data elevator){
   for (int i = 0; i < N_FLOORS; i++){
@@ -49,7 +50,7 @@ int main(){
             order.floor = floor;
             order.button = button;
             order_button_pressed(order, &elevator);
-            print_orders(elevator);
+            usleep(1000);
 
   				}
   			}

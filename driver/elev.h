@@ -9,6 +9,7 @@
 // Number of floors
 #define N_FLOORS 4
 #define N_BUTTONS 3
+#define DOOR_OPEN_DURATION 3.0
 
 typedef enum tag_elev_motor_direction {
     DIRN_DOWN = -1,
@@ -62,7 +63,7 @@ void elev_set_motor_direction(elev_motor_direction_t dirn);
 */
 void elev_set_door_open_lamp(int value);
 
-
+int elev_get_door_open_lamp();
 
 /**
   Get signal from obstruction switch.

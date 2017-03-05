@@ -75,6 +75,10 @@ void elev_set_door_open_lamp(int value) {
         io_clear_bit(LIGHT_DOOR_OPEN);
 }
 
+int elev_get_door_open_lamp(){
+    return io_read_bit(LIGHT_DOOR_OPEN);
+}
+
 int elev_get_obstruction_signal(void) {
     return io_read_bit(OBSTRUCTION);
 }
