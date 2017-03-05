@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool no_orders_above_floor(struct Elevator_data* elevator){
+bool no_orders_below_floor(struct Elevator_data* elevator){
   if (elevator->current_floor == 0) {
     return true;
   }
@@ -14,7 +14,7 @@ bool no_orders_above_floor(struct Elevator_data* elevator){
   return true;
 }
 
-bool no_orders_below_floor(struct Elevator_data* elevator){
+bool no_orders_above_floor(struct Elevator_data* elevator){
   if (elevator->current_floor == N_FLOORS-1) {
     return true;
   }
@@ -34,6 +34,11 @@ bool no_orders_at_current_floor(struct Elevator_data* elevator){
 }
 
 elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
+  if (no_orders_below_floor(elevator) && no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
+    elevator->direction = DIRN_STOP;
+    return DIRN_STOP;
+  }
+
   switch (elevator->direction) {
 
   case (DIRN_UP):
@@ -58,17 +63,16 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
     }
     if (no_orders_below_floor(elevator)){
       elevator->direction = DIRN_UP;
+      printf("Opp");
       return DIRN_UP;
     } else {
       elevator->direction = DIRN_DOWN;
+      printf("Ned");
       return DIRN_DOWN;
     }
   }
-
-  if (no_orders_below_floor(elevator) && no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
-    elevator->direction = DIRN_STOP;
-    return DIRN_STOP;
-  }
+  
+  return DIRN_STOP;
 }
 
 void remove_completed_orders(struct Elevator_data* elevator){

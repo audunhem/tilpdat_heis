@@ -8,3 +8,5 @@ void leave_floor(struct Elevator_data* elevator);
 void set_lights(int orders[N_FLOORS][N_BUTTONS]);
 
 void initialize_elevator(struct Elevator_data* elevator);
+
+void stop_button_pressed(struct Elevator_data* elevator);

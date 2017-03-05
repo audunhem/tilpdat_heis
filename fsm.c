@@ -17,32 +17,30 @@ void arrive_at_floor(struct Elevator_data* elevator){
 void button_pressed(struct Button_press order, struct Elevator_data* elevator){
 	elevator->orders[order.floor][order.button] = 1;
 	if (elevator->direction == DIRN_STOP) {
-		printf("IDLE");
+    printf("Setter retning:");
     elev_set_motor_direction(next_motor_direction(elevator));
 	}
   set_lights(elevator->orders);
 }
 
 void stop_button_pressed(struct Elevator_data* elevator){
+  elev_set_motor_direction(DIRN_STOP);
   stop_timer();
-  for (int i = 0; i < N_FLOORS; i++){
-    for (int j = 0; j < N_BUTTONS; j++){
-      elevator->orders[i][j] = 0;
-    }
-  }
-  if (elevator->direction == DIRN_STOP){
+  if (elev_get_floor_sensor_signal() >= 0){
     elev_set_door_open_lamp(1);
   }
-  set_lights(elevator->orders);
-  while (elev_get_stop_signal){
+  while (elev_get_stop_signal()){
     //do nothing
   }
+  initialize_elevator(elevator);
+  set_lights(elevator->orders);
   elev_set_door_open_lamp(0);
 }
 
 void leave_floor(struct Elevator_data* elevator){
   remove_completed_orders(elevator);
   set_lights(elevator->orders);
+  elev_set_door_open_lamp(0);
   elev_set_motor_direction(next_motor_direction(elevator));
 }
 
@@ -58,7 +56,12 @@ void initialize_elevator(struct Elevator_data* elevator){
   bool initialized = false;
   initialized = elev_init();
   if (!initialized){
-    printf("Initialisering feilet!")
+    printf("Initialisering feilet!");
+  }
+  for (int i = 0; i < N_FLOORS; i++){
+    for (int j = 0; j < N_BUTTONS; j++){
+      elevator->orders[i][j] = 0;
+    }
   }
 	if (elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_UP);
