@@ -20,8 +20,9 @@ void print_orders(struct Elevator_data elevator){
 
 int main(){
     struct Elevator_data elevator;
+    //all data about the elevator, it's being passed around to other functions
     initialize_elevator(&elevator);
-  	//Lager variabel for å unngå å oppfatte tastetrykk flere ganger
+    //to stop one button pressed from being added several times
   	int lastButtonPressed = -1;
 
   	while (true) {
@@ -47,13 +48,14 @@ int main(){
             struct Button_press order;
             order.floor = floor;
             order.button = button;
-            button_pressed(order, &elevator);
+            order_button_pressed(order, &elevator);
             print_orders(elevator);
 
   				}
   			}
   		}
 
+      //checks if stop button is pressed
       if (elev_get_stop_signal()){
         stop_button_pressed(&elevator);
       }

@@ -63,15 +63,13 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
     }
     if (no_orders_below_floor(elevator)){
       elevator->direction = DIRN_UP;
-      printf("Opp");
       return DIRN_UP;
     } else {
       elevator->direction = DIRN_DOWN;
-      printf("Ned");
       return DIRN_DOWN;
     }
   }
-  
+
   return DIRN_STOP;
 }
 
@@ -94,7 +92,8 @@ void remove_completed_orders(struct Elevator_data* elevator){
     }
 
   case (DIRN_STOP):
-    printf("Error in remove_completed_orders");
+    elevator->orders[elevator->current_floor][BUTTON_CALL_UP] == 0;
+    elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] == 0;
   }
 }
 
@@ -115,7 +114,7 @@ bool check_if_should_stop(struct Elevator_data* elevator) {
       return true;
     }
   case (DIRN_STOP):
-    printf("Error in check_if_should_stop");
+    return true;
   }
   return false;
 }

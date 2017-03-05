@@ -14,13 +14,16 @@ void arrive_at_floor(struct Elevator_data* elevator){
 	}
 }
 
-void button_pressed(struct Button_press order, struct Elevator_data* elevator){
+void order_button_pressed(struct Button_press order, struct Elevator_data* elevator){
 	elevator->orders[order.floor][order.button] = 1;
+  set_lights(elevator->orders);
 	if (elevator->direction == DIRN_STOP) {
     printf("Setter retning:");
     elev_set_motor_direction(next_motor_direction(elevator));
+    if (next_motor_direction(elevator) == DIRN_STOP) {
+      arrive_at_floor(elevator);
+    }
 	}
-  set_lights(elevator->orders);
 }
 
 void stop_button_pressed(struct Elevator_data* elevator){
@@ -30,11 +33,12 @@ void stop_button_pressed(struct Elevator_data* elevator){
     elev_set_door_open_lamp(1);
   }
   while (elev_get_stop_signal()){
-    //do nothing
+    elev_set_stop_lamp(1;)
   }
+  elev_set_door_open_lamp(0);
+  elev_set_stop_lamp(0);
   initialize_elevator(elevator);
   set_lights(elevator->orders);
-  elev_set_door_open_lamp(0);
 }
 
 void leave_floor(struct Elevator_data* elevator){
@@ -69,8 +73,8 @@ void initialize_elevator(struct Elevator_data* elevator){
 		while (elev_get_floor_sensor_signal() == -1){
       //do nothing
     }
-    elev_set_motor_direction(DIRN_STOP);
-    elevator->direction = DIRN_STOP;
-    elevator->current_floor = elev_get_floor_sensor_signal();
 	}
+  elev_set_motor_direction(DIRN_STOP);
+  elevator->direction = DIRN_STOP;
+  elevator->current_floor = elev_get_floor_sensor_signal();
 }
