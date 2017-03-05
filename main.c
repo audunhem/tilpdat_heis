@@ -12,7 +12,7 @@ int main(){
   	//Lager variabel for å unngå å oppfatte tastetrykk flere ganger
   	int lastButtonPressed = -1;
 
-  	while (1) {
+  	while (true) {
 
       //checks if elevator has arrived at new floor
   		if (elev_get_floor_sensor_signal() != elevator.current_floor && elev_get_floor_sensor_signal() >= 0) {
@@ -26,7 +26,7 @@ int main(){
         leave_floor(&elevator);
       }
 
-      //looping through all buttons
+      //looping through all order buttons
   		for (int floor = 0; floor < N_FLOORS; floor++) {
   			for (int button = BUTTON_CALL_UP; button < BUTTON_COMMAND; button++) {
   				if (elev_get_button_signal(button, floor) == 1 && lastButtonPressed != (N_FLOORS*floor + button)) {
@@ -38,6 +38,10 @@ int main(){
   				}
   			}
   		}
+
+      if (elev_get_stop_signal()){
+        stop_button_pressed(&elevator);
+      }
   	}
   return 0;
 }

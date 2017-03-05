@@ -74,7 +74,6 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 void remove_completed_orders(struct Elevator_data* elevator){
   switch (elevator->direction) {
   case (DIRN_UP):
-
     elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
 
@@ -83,13 +82,13 @@ void remove_completed_orders(struct Elevator_data* elevator){
     }
 
   case (DIRN_DOWN):
-
     elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] = 0;
     elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
 
     if (no_orders_below_floor(elevator)) {
       elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     }
+
   case (DIRN_STOP):
     printf("Error in remove_completed_orders");
   }
