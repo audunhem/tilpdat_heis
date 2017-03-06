@@ -5,9 +5,7 @@
 #include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-
-void print_orders(struct Elevator_data elevator){
+/*void print_orders(struct Elevator_data elevator){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
       printf("%i",elevator.orders[i][j]);
@@ -17,7 +15,7 @@ void print_orders(struct Elevator_data elevator){
   printf("Elevator direction: ");
   printf("%i\n",elevator.direction);
 
-}
+}*/
 
 int main(){
     struct Elevator_data elevator;
@@ -32,7 +30,6 @@ int main(){
   		if (elev_get_floor_sensor_signal() != elevator.current_floor && elev_get_floor_sensor_signal() >= 0) {
   			elevator.current_floor = elev_get_floor_sensor_signal();
         arrive_at_floor(&elevator);
-        print_orders(elevator);
   		}
 
       //checks if elevator should leave current floor
@@ -50,8 +47,6 @@ int main(){
             order.floor = floor;
             order.button = button;
             order_button_pressed(order, &elevator);
-            usleep(1000);
-
   				}
   			}
   		}
