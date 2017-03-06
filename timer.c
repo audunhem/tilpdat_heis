@@ -18,8 +18,10 @@ void stop_timer(){
 }
 
 bool door_timeout(){
+
   if (timer_active && difftime(time(NULL), start_time) > duration){
     return true;
   }
+
   return false;
 }

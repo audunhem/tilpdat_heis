@@ -4,6 +4,15 @@
 #include "timer.h"
 #include <stdio.h>
 
+static void set_lights(int orders[N_FLOORS][N_BUTTONS]){
+
+  for (int i = 0; i < N_FLOORS; i++){
+    for (int j = 0; j < N_BUTTONS; j++){
+      elev_set_button_lamp(j, i, orders[i][j]);
+    }
+  }
+}
+
 void arrive_at_floor(struct Elevator_data* elevator){
 
   elev_set_floor_indicator(elevator->current_floor);
@@ -65,14 +74,6 @@ void leave_floor(struct Elevator_data* elevator){
   elev_set_motor_direction(next_motor_direction(elevator));
 }
 
-void set_lights(int orders[N_FLOORS][N_BUTTONS]){
-
-  for (int i = 0; i < N_FLOORS; i++){
-    for (int j = 0; j < N_BUTTONS; j++){
-      elev_set_button_lamp(j, i, orders[i][j]);
-    }
-  }
-}
 
 void initialize_elevator(struct Elevator_data* elevator){
 

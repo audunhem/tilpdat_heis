@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool no_orders_below_floor(struct Elevator_data* elevator){
+static bool no_orders_below_floor(struct Elevator_data* elevator){
 
   if (elevator->current_floor == 0) {
     return true;
@@ -17,7 +17,7 @@ bool no_orders_below_floor(struct Elevator_data* elevator){
   return true;
 }
 
-bool no_orders_above_floor(struct Elevator_data* elevator){
+static bool no_orders_above_floor(struct Elevator_data* elevator){
 
   if (elevator->current_floor == N_FLOORS-1) {
     return true;
