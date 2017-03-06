@@ -43,6 +43,8 @@ bool no_orders_at_current_floor(struct Elevator_data* elevator){
 
 elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
+  if (elev_get_floor_sensor_signal() != -1){
+
   if (no_orders_below_floor(elevator) && no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
     elevator->direction = DIRN_STOP;
     return DIRN_STOP;
@@ -74,28 +76,58 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
   case (DIRN_STOP):
 
+
     for (int i = 0; i < N_BUTTONS; i++){
       if (elevator->orders[elevator->current_floor][i] == 1){
+        if (!no_orders_below_floor(elevator)){
+          elevator->direction = DIRN_DOWN;
+          return DIRN_DOWN;
+        } else if (!no_orders_above_floor(elevator)){
+          elevator->direction = DIRN_UP;
+          return DIRN_UP;
+        }
         elevator->direction = DIRN_STOP;
+        printf("Stop");
         return DIRN_STOP;
       }
     }
 
     if (no_orders_below_floor(elevator)){
       elevator->direction = DIRN_UP;
+      printf("Opp\n");
       return DIRN_UP;
     } else {
       elevator->direction = DIRN_DOWN;
+      printf("Ned\n");
       return DIRN_DOWN;
     }
+
     break;
   }
 
-  elevator->direction = DIRN_STOP;
-  return DIRN_STOP;
+  }
+
+  if (no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
+    elevator->direction = DIRN_DOWN;
+    return DIRN_DOWN;
+  } else if (no_orders_below_floor(elevator) && no_orders_at_current_floor(elevator)){
+    elevator->direction = DIRN_UP;
+    return DIRN_UP;
+  } else if (!no_orders_at_current_floor(elevator) && elevator->direction == DIRN_DOWN){
+    elevator->current_floor = -1; 
+    elevator->direction = DIRN_UP;
+    return DIRN_UP;
+  } else if (!no_orders_at_current_floor(elevator) && elevator->direction == DIRN_UP){
+    elevator->current_floor = -1;
+    elevator->direction = DIRN_DOWN;
+    return DIRN_DOWN;
+  }
+  return DIRN_UP;
+  
 }
 
 void remove_completed_orders(struct Elevator_data* elevator){
+  next_motor_direction(elevator);
 
   switch (elevator->direction) {
 
@@ -103,7 +135,6 @@ void remove_completed_orders(struct Elevator_data* elevator){
 
     elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
-    printf("Hei");
     if (no_orders_above_floor(elevator)) {
       elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] = 0;
     }
@@ -125,6 +156,7 @@ void remove_completed_orders(struct Elevator_data* elevator){
     } else if (!no_orders_above_floor(elevator)) {
       elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     }
+    elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
     
     break;
   }

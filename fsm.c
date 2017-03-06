@@ -27,7 +27,7 @@ void arrive_at_floor(struct Elevator_data* elevator){
 void order_button_pressed(struct Button_press order, struct Elevator_data* elevator){
 
 	elevator->orders[order.floor][order.button] = 1;
-  set_lights(elevator->orders);
+  	set_lights(elevator->orders);
 
 	if (elevator->direction == DIRN_STOP && !elev_get_door_open_lamp()) {
     elev_set_motor_direction(next_motor_direction(elevator));
@@ -67,11 +67,14 @@ void stop_button_pressed(struct Elevator_data* elevator){
 }
 
 void leave_floor(struct Elevator_data* elevator){
-  printf("%i", elevator->direction);
-  remove_completed_orders(elevator);
-  set_lights(elevator->orders);
+	next_motor_direction(elevator);
   elev_set_door_open_lamp(0);
-  elev_set_motor_direction(next_motor_direction(elevator));
+    remove_completed_orders(elevator);
+    set_lights(elevator->orders);
+    elev_set_motor_direction(next_motor_direction(elevator));
+
+
+
 }
 
 

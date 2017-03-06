@@ -5,7 +5,7 @@
 #include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
-/*void print_orders(struct Elevator_data elevator){
+void print_orders(struct Elevator_data elevator){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
       printf("%i",elevator.orders[i][j]);
@@ -15,7 +15,7 @@
   printf("Elevator direction: ");
   printf("%i\n",elevator.direction);
 
-}*/
+}
 
 int main(){
     struct Elevator_data elevator;
@@ -30,6 +30,7 @@ int main(){
   		if (elev_get_floor_sensor_signal() != elevator.current_floor && elev_get_floor_sensor_signal() >= 0) {
   			elevator.current_floor = elev_get_floor_sensor_signal();
         arrive_at_floor(&elevator);
+        print_orders(elevator);
   		}
 
       //checks if elevator should leave current floor
@@ -41,13 +42,14 @@ int main(){
       //looping through all order buttons
   		for (int floor = 0; floor < N_FLOORS; floor++) {
   			for (int button = BUTTON_CALL_UP; button < N_BUTTONS; button++) {
-          if (elev_get_button_signal(button, floor) == 1 && lastButtonPressed != (N_FLOORS*floor + button)) {
+          if (elev_get_button_signal(button, floor) == 1 && lastButtonPressed != (N_FLOORS*floor + button) && elevator.orders[floor][button] == 0) {
   					lastButtonPressed = N_FLOORS*floor + button;
             struct Button_press order;
             order.floor = floor;
             order.button = button;
             order_button_pressed(order, &elevator);
-  				}
+  				  print_orders(elevator);
+          }
   			}
   		}
 
