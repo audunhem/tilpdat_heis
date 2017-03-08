@@ -2,6 +2,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+void reset_all_orders(struct Elevator_data* elevator){
+  for (int i = 0; i < N_FLOORS; i++){
+    for (int j = 0; j < N_BUTTONS; j++){
+      elevator->orders[i][j] = 0;
+    }
+  }
+}
+
 static bool no_orders_below_floor(struct Elevator_data* elevator){
 
   if (elevator->current_floor == 0) {
@@ -44,7 +52,7 @@ bool no_orders_at_current_floor(struct Elevator_data* elevator){
 elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
   if (elev_get_floor_sensor_signal() != -1){
-
+    //if the elevator is at a floor
   if (no_orders_below_floor(elevator) && no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
     elevator->direction = DIRN_STOP;
     return DIRN_STOP;
@@ -61,7 +69,6 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
     elevator->direction = DIRN_UP;
     return DIRN_UP;
-    break;
 
   case (DIRN_DOWN):
 
@@ -72,33 +79,27 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
     elevator->direction = DIRN_DOWN;
     return DIRN_DOWN;
-    break;
 
   case (DIRN_STOP):
 
-
-    for (int i = 0; i < N_BUTTONS; i++){
-      if (elevator->orders[elevator->current_floor][i] == 1){
-        if (!no_orders_below_floor(elevator)){
-          elevator->direction = DIRN_DOWN;
-          return DIRN_DOWN;
-        } else if (!no_orders_above_floor(elevator)){
-          elevator->direction = DIRN_UP;
-          return DIRN_UP;
-        }
-        elevator->direction = DIRN_STOP;
-        printf("Stop");
-        return DIRN_STOP;
+    if(!no_orders_at_current_floor(elevator)){
+      //to stop the elevator from picking up all orders at a floor
+      if (!no_orders_below_floor(elevator)){
+        elevator->direction = DIRN_DOWN;
+        return DIRN_DOWN;
+      } else if (!no_orders_above_floor(elevator)){
+        elevator->direction = DIRN_UP;
+        return DIRN_UP;
       }
+      elevator->direction = DIRN_STOP;
+      return DIRN_STOP;
     }
 
     if (no_orders_below_floor(elevator)){
       elevator->direction = DIRN_UP;
-      printf("Opp\n");
       return DIRN_UP;
     } else {
       elevator->direction = DIRN_DOWN;
-      printf("Ned\n");
       return DIRN_DOWN;
     }
 
@@ -107,27 +108,35 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
   }
 
-  if (no_orders_above_floor(elevator) && no_orders_at_current_floor(elevator)){
-    elevator->direction = DIRN_DOWN;
-    return DIRN_DOWN;
-  } else if (no_orders_below_floor(elevator) && no_orders_at_current_floor(elevator)){
-    elevator->direction = DIRN_UP;
-    return DIRN_UP;
-  } else if (!no_orders_at_current_floor(elevator) && elevator->direction == DIRN_DOWN){
-    elevator->current_floor = -1; 
-    elevator->direction = DIRN_UP;
-    return DIRN_UP;
-  } else if (!no_orders_at_current_floor(elevator) && elevator->direction == DIRN_UP){
-    elevator->current_floor = -1;
-    elevator->direction = DIRN_DOWN;
-    return DIRN_DOWN;
+  //when the elevator is standing still between floors
+  switch (elevator->direction){
+    case DIRN_UP:
+      if (no_orders_above_floor(elevator)){
+        //incrementing to give regular behaviour when switching direction
+        elevator->current_floor++;
+        elevator->direction = DIRN_DOWN;
+        return DIRN_DOWN;
+      } else {
+        elevator->direction = DIRN_UP;
+        return DIRN_UP;
+      }
+    case DIRN_DOWN:
+      if (no_orders_below_floor(elevator)){
+        //decrementing to give regular behaviour when switching direction
+        elevator->current_floor--;
+        elevator->direction = DIRN_UP;
+        return DIRN_UP;
+      } else {
+        elevator->direction = DIRN_DOWN;
+        return DIRN_DOWN;
+    }
   }
-  return DIRN_UP;
-  
+
+  return DIRN_STOP;
+
 }
 
 void remove_completed_orders(struct Elevator_data* elevator){
-  next_motor_direction(elevator);
 
   switch (elevator->direction) {
 
@@ -157,7 +166,7 @@ void remove_completed_orders(struct Elevator_data* elevator){
       elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     }
     elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
-    
+
     break;
   }
 }
@@ -186,7 +195,6 @@ bool check_if_should_stop(struct Elevator_data* elevator) {
 
   case (DIRN_STOP):
     return true;
-    break;
   }
   return false;
 }

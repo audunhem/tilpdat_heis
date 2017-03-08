@@ -33,6 +33,7 @@ void order_button_pressed(struct Button_press order, struct Elevator_data* eleva
     elev_set_motor_direction(next_motor_direction(elevator));
 
     if (next_motor_direction(elevator) == DIRN_STOP) {
+      //order is called at current floor
       arrive_at_floor(elevator);
     }
 	}
@@ -41,14 +42,8 @@ void order_button_pressed(struct Button_press order, struct Elevator_data* eleva
 void stop_button_pressed(struct Elevator_data* elevator){
 
   elev_set_motor_direction(DIRN_STOP);
-  elevator->direction = DIRN_STOP;
   stop_timer();
-
-  for (int i = 0; i < N_FLOORS; i++){
-    for (int j = 0; j < N_BUTTONS; j++){
-      elevator->orders[i][j] = 0;
-    }
-  }
+  reset_all_orders(elevator);
   set_lights(elevator->orders);
 
   if (elev_get_floor_sensor_signal() >= 0){
@@ -69,12 +64,9 @@ void stop_button_pressed(struct Elevator_data* elevator){
 void leave_floor(struct Elevator_data* elevator){
 	next_motor_direction(elevator);
   elev_set_door_open_lamp(0);
-    remove_completed_orders(elevator);
-    set_lights(elevator->orders);
-    elev_set_motor_direction(next_motor_direction(elevator));
-
-
-
+  remove_completed_orders(elevator);
+  set_lights(elevator->orders);
+  elev_set_motor_direction(next_motor_direction(elevator));
 }
 
 
@@ -87,11 +79,7 @@ void initialize_elevator(struct Elevator_data* elevator){
     printf("Initializing failed!");
   }
 
-  for (int i = 0; i < N_FLOORS; i++){
-    for (int j = 0; j < N_BUTTONS; j++){
-      elevator->orders[i][j] = 0;
-    }
-  }
+  reset_all_orders(elevator);
 
 	if (elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_UP);

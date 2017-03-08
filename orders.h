@@ -1,5 +1,8 @@
 #include <stdbool.h>
 
+reset_all_orders(struct Elevator_data* elevator);
+//sets all orders to null
+
 elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator);
 //decides the direction the elevator is working in
 
