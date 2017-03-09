@@ -36,7 +36,7 @@ int main(){
       //checks if elevator should leave current floor
       if (door_timeout()){
         stop_timer();
-        if elev_get_floor_sensor_signal() >= 0 {
+        if (elev_get_floor_sensor_signal() >= 0) {
           leave_floor(&elevator);
         }
       }

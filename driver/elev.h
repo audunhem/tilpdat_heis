@@ -27,6 +27,7 @@ struct Elevator_data {
   int current_floor;
   elev_motor_direction_t direction;
   int orders[N_FLOORS][N_BUTTONS];
+  bool stopped_between_floors;
 };
 
 struct Button_press {

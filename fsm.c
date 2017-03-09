@@ -29,8 +29,9 @@ void order_button_pressed(struct Button_press order, struct Elevator_data* eleva
 	elevator->orders[order.floor][order.button] = 1;
   	set_lights(elevator->orders);
 
-	if (elevator->direction == DIRN_STOP && !elev_get_door_open_lamp()) {
+	if ((elevator->direction == DIRN_STOP && !elev_get_door_open_lamp()) || elevator->stopped_between_floors) {
     elev_set_motor_direction(next_motor_direction(elevator));
+    elevator->stopped_between_floors = false;
 
     if (next_motor_direction(elevator) == DIRN_STOP) {
       //order is called at current floor
@@ -48,6 +49,8 @@ void stop_button_pressed(struct Elevator_data* elevator){
 
   if (elev_get_floor_sensor_signal() >= 0){
     elev_set_door_open_lamp(1);
+  } else {
+    elevator->stopped_between_floors = true;
   }
 
   while (elev_get_stop_signal()){
@@ -73,6 +76,7 @@ void leave_floor(struct Elevator_data* elevator){
 void initialize_elevator(struct Elevator_data* elevator){
 
   bool initialized = false;
+  bool stopped_between_floors = false;
   initialized = elev_init();
 
   if (!initialized){
