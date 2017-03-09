@@ -14,6 +14,9 @@ void print_orders(struct Elevator_data elevator){
   }
   printf("Elevator direction: ");
   printf("%i\n",elevator.direction);
+  printf("Elevator floor: ");
+  printf("%i\n",elevator.current_floor);
+  printf("--------------------------\n");
 
 }
 

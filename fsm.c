@@ -65,7 +65,7 @@ void stop_button_pressed(struct Elevator_data* elevator){
 }
 
 void leave_floor(struct Elevator_data* elevator){
-	next_motor_direction(elevator);
+	//next_motor_direction(elevator);
   elev_set_door_open_lamp(0);
   remove_completed_orders(elevator);
   set_lights(elevator->orders);

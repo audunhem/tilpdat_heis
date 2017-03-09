@@ -5,6 +5,7 @@
 #ifndef __INCLUDE_DRIVER_H__
 #define __INCLUDE_DRIVER_H__
 
+#include <stdbool.h>
 
 // Number of floors
 #define N_FLOORS 4
