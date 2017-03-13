@@ -49,6 +49,9 @@ bool no_orders_at_current_floor(struct Elevator_data* elevator){
   return true;
 }
 
+//problemer når heisen får en ordre i samme etasje når den har stått stille
+//noen knapper reagerer ikke alltid
+
 elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
   if (elev_get_floor_sensor_signal() != -1){
