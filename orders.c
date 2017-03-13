@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-void reset_all_orders(struct Elevator_data* elevator){
+void logic_reset_all_orders(struct ElevatorData* elevator){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
       elevator->orders[i][j] = 0;
@@ -10,7 +10,7 @@ void reset_all_orders(struct Elevator_data* elevator){
   }
 }
 
-static bool no_orders_below_floor(struct Elevator_data* elevator){
+static bool no_orders_below_floor(struct ElevatorData* elevator){
 
   if (elevator->current_floor == 0) {
     return true;
@@ -25,7 +25,7 @@ static bool no_orders_below_floor(struct Elevator_data* elevator){
   return true;
 }
 
-static bool no_orders_above_floor(struct Elevator_data* elevator){
+static bool no_orders_above_floor(struct ElevatorData* elevator){
 
   if (elevator->current_floor == N_FLOORS-1) {
     return true;
@@ -40,7 +40,7 @@ static bool no_orders_above_floor(struct Elevator_data* elevator){
   return true;
 }
 
-static bool no_orders_at_current_floor(struct Elevator_data* elevator){
+static bool no_orders_at_current_floor(struct ElevatorData* elevator){
 
   if (elevator->orders[elevator->current_floor][BUTTON_CALL_UP] != 0 || elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] != 0 || elevator->orders[elevator->current_floor][BUTTON_COMMAND] != 0) {
     return false;
@@ -52,7 +52,7 @@ static bool no_orders_at_current_floor(struct Elevator_data* elevator){
 //problemer når heisen får en ordre i samme etasje når den har stått stille
 //noen knapper reagerer ikke alltid
 
-elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
+elev_motor_direction_t logic_next_motor_direction(struct ElevatorData* elevator){
 
   if (elev_get_floor_sensor_signal() != -1){
     //if the elevator is at a floor
@@ -139,9 +139,9 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
 }
 
-void remove_completed_orders(struct Elevator_data* elevator){
+void logic_remove_completed_orders(struct ElevatorData* elevator){
 
-  switch (next_motor_direction(elevator)) {
+  switch (logic_next_motor_direction(elevator)) {
 
   case (DIRN_UP):
 
@@ -180,7 +180,7 @@ void remove_completed_orders(struct Elevator_data* elevator){
   }
 }
 
-bool check_if_should_stop(struct Elevator_data* elevator) {
+bool logic_check_if_should_stop(struct ElevatorData* elevator) {
 
   switch (elevator->direction) {
 

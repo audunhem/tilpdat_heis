@@ -4,7 +4,7 @@
 #include "timer.h"
 #include <stdio.h>
 
-static void set_lights(int orders[N_FLOORS][N_BUTTONS]){
+static void fsm_set_lights(int orders[N_FLOORS][N_BUTTONS]){
 
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
@@ -13,39 +13,39 @@ static void set_lights(int orders[N_FLOORS][N_BUTTONS]){
   }
 }
 
-void arrive_at_floor(struct Elevator_data* elevator){
+void fsm_arrive_at_floor(struct ElevatorData* elevator){
 
   elev_set_floor_indicator(elevator->current_floor);
 
-	if (check_if_should_stop(elevator)) {
+	if (logic_check_if_should_stop(elevator)) {
     elev_set_motor_direction(DIRN_STOP);
   	elev_set_door_open_lamp(1);
-    start_timer(DOOR_OPEN_DURATION);
+    timer_start(DOOR_OPEN_DURATION);
 	}
 }
 
-void order_button_pressed(struct Button_press order, struct Elevator_data* elevator){
+void fsm_order_button_pressed(struct Button_press order, struct ElevatorData* elevator){
 
 	elevator->orders[order.floor][order.button] = 1;
-  	set_lights(elevator->orders);
+  	fsm_set_lights(elevator->orders);
 
 	if ((elevator->direction == DIRN_STOP && !elev_get_door_open_lamp()) || elevator->stopped_between_floors) {
-    elev_set_motor_direction(next_motor_direction(elevator));
+    elev_set_motor_direction(logic_next_motor_direction(elevator));
     elevator->stopped_between_floors = false;
 
-    if (next_motor_direction(elevator) == DIRN_STOP) {
+    if (logic_next_motor_direction(elevator) == DIRN_STOP) {
       //order is called at current floor
-      arrive_at_floor(elevator);
+      fsm_arrive_at_floor(elevator);
     }
 	}
 }
 
-void stop_button_pressed(struct Elevator_data* elevator){
+void fsm_stop_button_pressed(struct ElevatorData* elevator){
 
   elev_set_motor_direction(DIRN_STOP);
-  stop_timer();
-  reset_all_orders(elevator);
-  set_lights(elevator->orders);
+  timer_stop();
+  logic_reset_all_orders(elevator);
+  fsm_set_lights(elevator->orders);
 
   if (elev_get_floor_sensor_signal() >= 0){
     elev_set_door_open_lamp(1);
@@ -58,22 +58,22 @@ void stop_button_pressed(struct Elevator_data* elevator){
   }
 
   if (elev_get_floor_sensor_signal() >= 0){
-    start_timer(DOOR_OPEN_DURATION);
+    timer_start(DOOR_OPEN_DURATION);
   }
 
   elev_set_stop_lamp(0);
 }
 
-void leave_floor(struct Elevator_data* elevator){
-	//next_motor_direction(elevator);
+void fsm_leave_floor(struct ElevatorData* elevator){
+	//logic_next_motor_direction(elevator);
   elev_set_door_open_lamp(0);
-  remove_completed_orders(elevator);
-  set_lights(elevator->orders);
-  elev_set_motor_direction(next_motor_direction(elevator));
+  logic_remove_completed_orders(elevator);
+  fsm_set_lights(elevator->orders);
+  elev_set_motor_direction(logic_next_motor_direction(elevator));
 }
 
 
-void initialize_elevator(struct Elevator_data* elevator){
+void fsm_initialize_elevator(struct ElevatorData* elevator){
 
   bool initialized = false;
   bool stopped_between_floors = false;
@@ -83,7 +83,7 @@ void initialize_elevator(struct Elevator_data* elevator){
     printf("Initializing failed!");
   }
 
-  reset_all_orders(elevator);
+  logic_reset_all_orders(elevator);
 
 	if (elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_UP);

@@ -7,17 +7,17 @@ static time_t start_time;
 static double duration;
 static bool timer_active;
 
-void start_timer(double door_open_duration){
-  duration = door_open_duration;
+void timer_start(double DOOR_OPEN_DURATION){
+  duration = DOOR_OPEN_DURATION;
   start_time = time(NULL);
   timer_active = true;
 }
 
-void stop_timer(){
+void timer_stop(){
   timer_active = false;
 }
 
-bool door_timeout(){
+bool timer_door_timeout(){
 
   if (timer_active && difftime(time(NULL), start_time) > duration){
     return true;

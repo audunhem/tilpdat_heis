@@ -23,7 +23,7 @@ void print_orders(struct Elevator_data elevator){
 int main(){
     struct Elevator_data elevator;
     //all data about the elevator, it's being passed around to other functions
-    initialize_elevator(&elevator);
+    fsm_initialize_elevator(&elevator);
     //to stop one button pressed from being added several times
   	int lastButtonPressed = -1;
 
@@ -32,16 +32,16 @@ int main(){
       //checks if elevator has arrived at new floor
   		if (elev_get_floor_sensor_signal() != elevator.current_floor && elev_get_floor_sensor_signal() >= 0) {
   			elevator.current_floor = elev_get_floor_sensor_signal();
-        arrive_at_floor(&elevator);
+        fsm_arrive_at_floor(&elevator);
         print_orders(elevator);
   		}
 
       //checks if elevator should leave current floor
-      if (door_timeout()){
-        stop_timer();
+      if (timer_door_timeout()){
+        timer_stop();
         if (elev_get_floor_sensor_signal() >= 0) {
           lastButtonPressed = -1;
-          leave_floor(&elevator);
+          fsm_leave_floor(&elevator);
         }
       }
 
@@ -53,7 +53,7 @@ int main(){
             struct Button_press order;
             order.floor = floor;
             order.button = button;
-            order_button_pressed(order, &elevator);
+            fsm_order_button_pressed(order, &elevator);
   				  print_orders(elevator);
           }
   			}
@@ -61,7 +61,7 @@ int main(){
 
       //checks if stop button is pressed
       if (elev_get_stop_signal()){
-        stop_button_pressed(&elevator);
+        fsm_stop_button_pressed(&elevator);
       }
   	}
   return 0;

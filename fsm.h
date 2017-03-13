@@ -1,13 +1,13 @@
 
-void arrive_at_floor();
+void fsm_arrive_at_floor();
 //is called every time the elevator enters a new floor
 
-void order_button_pressed(struct Button_press order, struct Elevator_data* elevator);
+void fsm_order_button_pressed(struct Button_press order, struct ElevatorData* elevator);
 
-void leave_floor(struct Elevator_data* elevator);
+void fsm_leave_floor(struct ElevatorData* elevator);
 //is called if the elevator has stopped at a floor, and the door has closed
 
-void initialize_elevator(struct Elevator_data* elevator);
+void fsm_initialize_elevator(struct ElevatorData* elevator);
 //sets the elevator in a defined state
 
-void stop_button_pressed(struct Elevator_data* elevator);
+void fsm_stop_button_pressed(struct ElevatorData* elevator);
