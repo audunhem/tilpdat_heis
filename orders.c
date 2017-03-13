@@ -40,7 +40,7 @@ static bool no_orders_above_floor(struct Elevator_data* elevator){
   return true;
 }
 
-bool no_orders_at_current_floor(struct Elevator_data* elevator){
+static bool no_orders_at_current_floor(struct Elevator_data* elevator){
 
   if (elevator->orders[elevator->current_floor][BUTTON_CALL_UP] != 0 || elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] != 0 || elevator->orders[elevator->current_floor][BUTTON_COMMAND] != 0) {
     return false;
@@ -141,7 +141,7 @@ elev_motor_direction_t next_motor_direction(struct Elevator_data* elevator){
 
 void remove_completed_orders(struct Elevator_data* elevator){
 
-  switch (elevator->direction) {
+  switch (next_motor_direction(elevator)) {
 
   case (DIRN_UP):
 
