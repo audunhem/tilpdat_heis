@@ -40,7 +40,7 @@ int main(){
       if (door_timeout()){
         stop_timer();
         if (elev_get_floor_sensor_signal() >= 0) {
-          lastButtonPressed = -1
+          lastButtonPressed = -1;
           leave_floor(&elevator);
         }
       }
