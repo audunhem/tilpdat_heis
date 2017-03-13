@@ -167,6 +167,12 @@ void remove_completed_orders(struct Elevator_data* elevator){
       elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] = 0;
     } else if (!no_orders_above_floor(elevator)) {
       elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
+    } else if (no_orders_above_floor(elevator) && no_orders_below_floor(elevator)){
+      elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] = 0;
+      elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
+    } else if (elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN]*elevator->orders[elevator->current_floor][BUTTON_CALL_UP] == 0){
+      elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] = 0;
+      elevator->orders[elevator->current_floor][BUTTON_CALL_UP] = 0;
     }
     elevator->orders[elevator->current_floor][BUTTON_COMMAND] = 0;
 
