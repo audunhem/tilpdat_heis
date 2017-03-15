@@ -75,7 +75,7 @@ void fsm_leave_floor(struct ElevatorData* elevator){
 void fsm_initialize_elevator(struct ElevatorData* elevator){
 
   bool initialized = false;
-  bool stopped_between_floors = false;
+  //bool stopped_between_floors = false;
   initialized = elev_init();
 
   if (!initialized){

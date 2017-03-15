@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 //help function to print useful information
-void print_orders(struct Elevator_data elevator){
+void print_orders(struct ElevatorData elevator){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
       printf("%i",elevator.orders[i][j]);
