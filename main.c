@@ -5,6 +5,8 @@
 #include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+//help function to print useful information
 void print_orders(struct Elevator_data elevator){
   for (int i = 0; i < N_FLOORS; i++){
     for (int j = 0; j < N_BUTTONS; j++){
@@ -20,8 +22,10 @@ void print_orders(struct Elevator_data elevator){
 
 }
 
+//constants and structs can be found in elev.h
+
 int main(){
-    struct Elevator_data elevator;
+    struct ElevatorData elevator;
     //all data about the elevator, it's being passed around to other functions
     fsm_initialize_elevator(&elevator);
 

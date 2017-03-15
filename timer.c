@@ -7,8 +7,8 @@ static time_t start_time;
 static double duration;
 static bool timer_active;
 
-void timer_start(double DOOR_OPEN_DURATION){
-  duration = DOOR_OPEN_DURATION;
+void timer_start(double countdown_time){
+  duration = countdown_time;
   start_time = time(NULL);
   timer_active = true;
 }

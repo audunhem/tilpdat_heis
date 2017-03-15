@@ -42,7 +42,8 @@ static bool no_orders_above_floor(struct ElevatorData* elevator){
 
 static bool no_orders_at_current_floor(struct ElevatorData* elevator){
 
-  if (elevator->orders[elevator->current_floor][BUTTON_CALL_UP] != 0 || elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] != 0 || elevator->orders[elevator->current_floor][BUTTON_COMMAND] != 0) {
+  if (elevator->orders[elevator->current_floor][BUTTON_CALL_UP] != 0 || elevator->orders[elevator->current_floor][BUTTON_CALL_DOWN] != 0 ||
+    elevator->orders[elevator->current_floor][BUTTON_COMMAND] != 0) {
     return false;
   }
 

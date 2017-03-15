@@ -65,7 +65,6 @@ void fsm_stop_button_pressed(struct ElevatorData* elevator){
 }
 
 void fsm_leave_floor(struct ElevatorData* elevator){
-	//decision_next_motor_direction(elevator);
   elev_set_door_open_lamp(0);
   decision_remove_completed_orders(elevator);
   fsm_set_lights(elevator->orders);

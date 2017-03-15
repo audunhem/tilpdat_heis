@@ -1,7 +1,7 @@
 
-void timer_start(double door_open_duration);
+void timer_start(double countdown_time);
 
 void timer_stop();
 
 bool timer_door_timeout();
-//returns true when door should closed, constantly polled by main()
+//returns true when door should close, constantly polled by main()
