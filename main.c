@@ -1,7 +1,7 @@
 
 #include "driver/elev.h"
 #include "fsm.h"
-#include "orders.h"
+#include "decisions.h"
 #include "timer.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,6 +24,7 @@ int main(){
     struct Elevator_data elevator;
     //all data about the elevator, it's being passed around to other functions
     fsm_initialize_elevator(&elevator);
+
     //to stop one button pressed from being added several times
   	int lastButtonPressed = -1;
 
@@ -50,7 +51,7 @@ int main(){
   			for (int button = BUTTON_CALL_UP; button < N_BUTTONS; button++) {
           if (elev_get_button_signal(button, floor) == 1 && lastButtonPressed != (N_FLOORS*floor + button) && elevator.orders[floor][button] == 0) {
   					lastButtonPressed = N_FLOORS*floor + button;
-            struct Button_press order;
+            struct ButtonPress order;
             order.floor = floor;
             order.button = button;
             fsm_order_button_pressed(order, &elevator);
@@ -62,6 +63,7 @@ int main(){
       //checks if stop button is pressed
       if (elev_get_stop_signal()){
         fsm_stop_button_pressed(&elevator);
+        lastButtonPressed = -1;
       }
   	}
   return 0;

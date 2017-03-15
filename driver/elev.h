@@ -31,7 +31,7 @@ struct ElevatorData {
   bool stopped_between_floors;
 };
 
-struct Button_press {
+struct ButtonPress {
   int floor;
   elev_button_type_t button;
 };
